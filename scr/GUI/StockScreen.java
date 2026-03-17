@@ -148,16 +148,16 @@ public class StockScreen extends javax.swing.JFrame {
         alertPanel1Layout.setHorizontalGroup(
             alertPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(alertPanel1Layout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addGap(39, 39, 39)
                 .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         alertPanel1Layout.setVerticalGroup(
             alertPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(alertPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(29, 29, 29)
                 .addComponent(jLabel2)
-                .addContainerGap(198, Short.MAX_VALUE))
+                .addContainerGap(201, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
