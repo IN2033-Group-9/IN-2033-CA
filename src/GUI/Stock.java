@@ -6,7 +6,7 @@ package GUI;
 
 /**
  *
- * @author mehzanazkhan
+ * @author laraashour
  */
 public class Stock extends javax.swing.JPanel {
 

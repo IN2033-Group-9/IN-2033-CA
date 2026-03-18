@@ -6,7 +6,7 @@ package GUI;
 
 /**
  *
- * @author mehzanazkhan
+ * @author laraashour
  */
 public class Dashboard extends javax.swing.JPanel {
 
@@ -27,26 +27,22 @@ public class Dashboard extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lbTitle = new javax.swing.JLabel();
-        lbInfo1 = new javax.swing.JLabel();
         stockPanel1 = new javax.swing.JPanel();
         lbStock1 = new javax.swing.JLabel();
-        pendingPanel4 = new javax.swing.JPanel();
-        lbPending4 = new javax.swing.JLabel();
         salesPanel2 = new javax.swing.JPanel();
         lbSales2 = new javax.swing.JLabel();
+        pendingPanel4 = new javax.swing.JPanel();
+        lbPending4 = new javax.swing.JLabel();
         accountPanel3 = new javax.swing.JPanel();
         lbAccount3 = new javax.swing.JLabel();
+        lbTitle = new javax.swing.JLabel();
+        lbInfo1 = new javax.swing.JLabel();
 
-        lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
-        lbTitle.setText("Dashboard");
+        setBackground(new java.awt.Color(255, 255, 255));
 
-        lbInfo1.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
-        lbInfo1.setForeground(new java.awt.Color(102, 102, 102));
-        lbInfo1.setText("Welcome to InfoPharma Ordering System");
+        stockPanel1.setBackground(new java.awt.Color(204, 255, 255));
 
-        stockPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
+        lbStock1.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbStock1.setText("Total Stock Items");
 
         javax.swing.GroupLayout stockPanel1Layout = new javax.swing.GroupLayout(stockPanel1);
@@ -54,41 +50,21 @@ public class Dashboard extends javax.swing.JPanel {
         stockPanel1Layout.setHorizontalGroup(
             stockPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(stockPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(20, 20, 20)
                 .addComponent(lbStock1)
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addContainerGap(298, Short.MAX_VALUE))
         );
         stockPanel1Layout.setVerticalGroup(
             stockPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(stockPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(lbStock1)
-                .addContainerGap(185, Short.MAX_VALUE))
-        );
-
-        pendingPanel4.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbPending4.setText("Pending Orders");
-
-        javax.swing.GroupLayout pendingPanel4Layout = new javax.swing.GroupLayout(pendingPanel4);
-        pendingPanel4.setLayout(pendingPanel4Layout);
-        pendingPanel4Layout.setHorizontalGroup(
-            pendingPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pendingPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbPending4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pendingPanel4Layout.setVerticalGroup(
-            pendingPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pendingPanel4Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(lbPending4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(lbStock1)
+                .addContainerGap(251, Short.MAX_VALUE))
         );
 
-        salesPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        salesPanel2.setBackground(new java.awt.Color(204, 255, 204));
 
+        lbSales2.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbSales2.setText("Today's Sales");
 
         javax.swing.GroupLayout salesPanel2Layout = new javax.swing.GroupLayout(salesPanel2);
@@ -96,20 +72,43 @@ public class Dashboard extends javax.swing.JPanel {
         salesPanel2Layout.setHorizontalGroup(
             salesPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(salesPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(15, 15, 15)
                 .addComponent(lbSales2)
-                .addContainerGap(271, Short.MAX_VALUE))
+                .addContainerGap(345, Short.MAX_VALUE))
         );
         salesPanel2Layout.setVerticalGroup(
             salesPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(salesPanel2Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(26, 26, 26)
                 .addComponent(lbSales2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        accountPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        pendingPanel4.setBackground(new java.awt.Color(255, 255, 204));
 
+        lbPending4.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        lbPending4.setText("Pending Orders");
+
+        javax.swing.GroupLayout pendingPanel4Layout = new javax.swing.GroupLayout(pendingPanel4);
+        pendingPanel4.setLayout(pendingPanel4Layout);
+        pendingPanel4Layout.setHorizontalGroup(
+            pendingPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pendingPanel4Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(lbPending4)
+                .addContainerGap(299, Short.MAX_VALUE))
+        );
+        pendingPanel4Layout.setVerticalGroup(
+            pendingPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pendingPanel4Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(lbPending4)
+                .addContainerGap(247, Short.MAX_VALUE))
+        );
+
+        accountPanel3.setBackground(new java.awt.Color(204, 204, 255));
+
+        lbAccount3.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         lbAccount3.setText("Active Customers");
 
         javax.swing.GroupLayout accountPanel3Layout = new javax.swing.GroupLayout(accountPanel3);
@@ -117,58 +116,65 @@ public class Dashboard extends javax.swing.JPanel {
         accountPanel3Layout.setHorizontalGroup(
             accountPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(accountPanel3Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(19, 19, 19)
                 .addComponent(lbAccount3)
-                .addContainerGap(251, Short.MAX_VALUE))
+                .addContainerGap(274, Short.MAX_VALUE))
         );
         accountPanel3Layout.setVerticalGroup(
             accountPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(accountPanel3Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(27, 27, 27)
                 .addComponent(lbAccount3)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(250, Short.MAX_VALUE))
         );
+
+        lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 48)); // NOI18N
+        lbTitle.setText("Dashboard");
+
+        lbInfo1.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        lbInfo1.setForeground(new java.awt.Color(102, 102, 102));
+        lbInfo1.setText("Welcome to InfoPharma Ordering System");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(113, 113, 113)
-                .addComponent(lbTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(103, 103, 103)
+                .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbInfo1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(lbTitle)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(stockPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(salesPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pendingPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(accountPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(240, 240, 240))))
+                            .addComponent(lbInfo1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(salesPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(stockPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pendingPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(accountPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 66, 66))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(64, 64, 64)
                 .addComponent(lbTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbInfo1)
-                .addGap(96, 96, 96)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pendingPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(stockPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(stockPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pendingPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(58, 58, 58)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(accountPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(salesPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(138, 138, 138))
+                .addGap(59, 59, 59))
         );
     }// </editor-fold>//GEN-END:initComponents
 
