@@ -34,11 +34,12 @@ public class LoginScreen extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPasswordField = new javax.swing.JPasswordField();
         jUsernameField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        signIn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 204, 255));
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 51));
 
@@ -62,7 +63,7 @@ public class LoginScreen extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(jLabel2)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -74,7 +75,7 @@ public class LoginScreen extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(153, 204, 255));
 
         jPasswordField.setFont(new java.awt.Font("Menlo", 0, 18)); // NOI18N
         jPasswordField.setText("Password");
@@ -83,10 +84,10 @@ public class LoginScreen extends javax.swing.JFrame {
         jUsernameField.setText("Username");
         jUsernameField.addActionListener(this::jUsernameFieldActionPerformed);
 
-        jButton1.setBackground(new java.awt.Color(153, 204, 255));
-        jButton1.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 25)); // NOI18N
-        jButton1.setText("SIGN IN");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        signIn.setBackground(new java.awt.Color(153, 204, 255));
+        signIn.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 25)); // NOI18N
+        signIn.setText("SIGN IN");
+        signIn.addActionListener(this::signInActionPerformed);
 
         jLabel3.setFont(new java.awt.Font("Kailasa", 1, 60)); // NOI18N
         jLabel3.setText("Sign in");
@@ -100,7 +101,7 @@ public class LoginScreen extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(signIn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(127, 127, 127))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,7 +130,7 @@ public class LoginScreen extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton1)
                 .addGap(57, 57, 57)
-                .addComponent(jButton1)
+                .addComponent(signIn)
                 .addContainerGap(111, Short.MAX_VALUE))
         );
 
@@ -138,6 +139,7 @@ public class LoginScreen extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -151,9 +153,18 @@ public class LoginScreen extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void signInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        boolean userLoginAuthenticated = true;//TEMPORARY
+        //perform the authentication of the user's login details 
+        //(retrieve details from database)
+        if (userLoginAuthenticated){
+            new MainWindow().setVisible(true);
+            this.dispose();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid Login");
+        }
+    }//GEN-LAST:event_signInActionPerformed
 
     private void jUsernameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jUsernameFieldActionPerformed
         // TODO add your handling code here:
@@ -189,7 +200,6 @@ public class LoginScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -198,5 +208,6 @@ public class LoginScreen extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordField;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JTextField jUsernameField;
+    private javax.swing.JButton signIn;
     // End of variables declaration//GEN-END:variables
 }

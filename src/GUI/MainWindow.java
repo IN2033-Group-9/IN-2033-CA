@@ -177,7 +177,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStockActionPerformed
 
     private void btnSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Sales clicked");
+        contentPanel.removeAll();
+        contentPanel.add(new Sales(), java.awt.BorderLayout.CENTER);
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }//GEN-LAST:event_btnSalesActionPerformed
 
     private void btnOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdersActionPerformed
@@ -189,7 +193,8 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOrdersActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        // TODO add your handling code here:
+        new LoginScreen().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
