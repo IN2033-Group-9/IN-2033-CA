@@ -53,7 +53,7 @@ public class MainWindow extends javax.swing.JFrame {
         sidebarPanel.setBackground(new java.awt.Color(0, 0, 51));
 
         btnDashboard.setBackground(new java.awt.Color(0, 0, 51));
-        btnDashboard.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        btnDashboard.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
         btnDashboard.setForeground(new java.awt.Color(255, 255, 255));
         btnDashboard.setText("Dashboard");
         btnDashboard.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -61,7 +61,7 @@ public class MainWindow extends javax.swing.JFrame {
         btnDashboard.addActionListener(this::btnDashboardActionPerformed);
 
         btnStock.setBackground(new java.awt.Color(0, 0, 51));
-        btnStock.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        btnStock.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
         btnStock.setForeground(new java.awt.Color(255, 255, 255));
         btnStock.setText("Stock");
         btnStock.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -69,7 +69,7 @@ public class MainWindow extends javax.swing.JFrame {
         btnStock.addActionListener(this::btnStockActionPerformed);
 
         btnSales.setBackground(new java.awt.Color(0, 0, 51));
-        btnSales.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        btnSales.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
         btnSales.setForeground(new java.awt.Color(255, 255, 255));
         btnSales.setText("Sales");
         btnSales.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -77,7 +77,7 @@ public class MainWindow extends javax.swing.JFrame {
         btnSales.addActionListener(this::btnSalesActionPerformed);
 
         btnOrders.setBackground(new java.awt.Color(0, 0, 51));
-        btnOrders.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        btnOrders.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
         btnOrders.setForeground(new java.awt.Color(255, 255, 255));
         btnOrders.setText("Orders");
         btnOrders.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -85,7 +85,7 @@ public class MainWindow extends javax.swing.JFrame {
         btnOrders.addActionListener(this::btnOrdersActionPerformed);
 
         btnLogout.setBackground(new java.awt.Color(255, 102, 102));
-        btnLogout.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        btnLogout.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
         btnLogout.setForeground(new java.awt.Color(255, 255, 255));
         btnLogout.setText("Logout");
         btnLogout.setBorder(null);
@@ -110,32 +110,32 @@ public class MainWindow extends javax.swing.JFrame {
             .addComponent(btnSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnLogout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidebarPanelLayout.createSequentialGroup()
-                .addContainerGap(53, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43))
+                .addGap(45, 45, 45))
             .addGroup(sidebarPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         sidebarPanelLayout.setVerticalGroup(
             sidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidebarPanelLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnStock, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnStock, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSales, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnSales, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addComponent(btnOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(464, Short.MAX_VALUE))
+                .addContainerGap(382, Short.MAX_VALUE))
         );
 
         contentPanel.setLayout(new java.awt.BorderLayout());

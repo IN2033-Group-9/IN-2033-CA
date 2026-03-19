@@ -52,7 +52,7 @@ public class Dashboard extends javax.swing.JPanel {
             .addGroup(stockPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(lbStock1)
-                .addContainerGap(298, Short.MAX_VALUE))
+                .addContainerGap(259, Short.MAX_VALUE))
         );
         stockPanel1Layout.setVerticalGroup(
             stockPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -74,7 +74,7 @@ public class Dashboard extends javax.swing.JPanel {
             .addGroup(salesPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(lbSales2)
-                .addContainerGap(345, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         salesPanel2Layout.setVerticalGroup(
             salesPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -96,7 +96,7 @@ public class Dashboard extends javax.swing.JPanel {
             .addGroup(pendingPanel4Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(lbPending4)
-                .addContainerGap(299, Short.MAX_VALUE))
+                .addContainerGap(273, Short.MAX_VALUE))
         );
         pendingPanel4Layout.setVerticalGroup(
             pendingPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,7 +118,7 @@ public class Dashboard extends javax.swing.JPanel {
             .addGroup(accountPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(lbAccount3)
-                .addContainerGap(274, Short.MAX_VALUE))
+                .addContainerGap(248, Short.MAX_VALUE))
         );
         accountPanel3Layout.setVerticalGroup(
             accountPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,14 +150,14 @@ public class Dashboard extends javax.swing.JPanel {
                             .addComponent(lbInfo1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(11, 11, 11)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(salesPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(stockPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(stockPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(salesPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pendingPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(accountPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(66, 66, 66))))
+                            .addComponent(accountPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pendingPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(92, 92, 92))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
