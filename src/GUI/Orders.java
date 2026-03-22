@@ -36,7 +36,7 @@ public class Orders extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        lbInfo1.setFont(new java.awt.Font("Helvetica Neue", 0, 20)); // NOI18N
+        lbInfo1.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
         lbInfo1.setForeground(new java.awt.Color(102, 102, 102));
         lbInfo1.setText("Welcome to the InfoPharma Ordering System");
 
@@ -83,6 +83,7 @@ public class Orders extends javax.swing.JPanel {
         jButton1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("+   Place New Order");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
         jLabel1.setText("Orders to InfoPharma");

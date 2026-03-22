@@ -22,24 +22,22 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="lbTitle" min="-2" pref="200" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="lbInfo1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lbInfo1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="stockPanel1" max="32767" attributes="0"/>
-                                  <Component id="salesPanel2" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="stockPanel1" max="32767" attributes="0"/>
+                          <Component id="salesPanel2" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="112" max="32767" attributes="0"/>
+                      <EmptySpace pref="108" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="accountPanel3" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="pendingPanel4" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -55,9 +53,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
               <Component id="lbTitle" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="lbInfo1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="94" max="32767" attributes="0"/>
+              <EmptySpace pref="95" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="stockPanel1" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Component id="pendingPanel4" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -76,7 +74,12 @@
     <Container class="javax.swing.JPanel" name="stockPanel1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="cc" type="rgb"/>
+          <Color blue="ff" green="cc" red="99" type="rgb"/>
+        </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder/>
+          </Border>
         </Property>
       </Properties>
 
@@ -84,18 +87,18 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
                   <Component id="lbStock1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="259" max="32767" attributes="0"/>
+                  <EmptySpace pref="158" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                   <Component id="lbStock1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="251" max="32767" attributes="0"/>
+                  <EmptySpace pref="261" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -116,13 +119,18 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="ff" red="cc" type="rgb"/>
         </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder/>
+          </Border>
+        </Property>
       </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="140" max="-2" attributes="0"/>
                   <Component id="lbSales2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -131,7 +139,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                   <Component id="lbSales2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -154,24 +162,29 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="ff" red="ff" type="rgb"/>
         </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder/>
+          </Border>
+        </Property>
       </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="144" max="-2" attributes="0"/>
                   <Component id="lbPending4" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="273" max="32767" attributes="0"/>
+                  <EmptySpace pref="146" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                   <Component id="lbPending4" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="247" max="32767" attributes="0"/>
+                  <EmptySpace pref="263" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -192,24 +205,29 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="cc" red="cc" type="rgb"/>
         </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder/>
+          </Border>
+        </Property>
       </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
                   <Component id="lbAccount3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="248" max="32767" attributes="0"/>
+                  <EmptySpace pref="135" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                   <Component id="lbAccount3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="250" max="32767" attributes="0"/>
+                  <EmptySpace pref="262" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -236,7 +254,7 @@
     <Component class="javax.swing.JLabel" name="lbInfo1">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Helvetica Neue" size="20" style="0"/>
+          <Font name="Helvetica Neue" size="20" style="1"/>
         </Property>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="66" green="66" red="66" type="rgb"/>

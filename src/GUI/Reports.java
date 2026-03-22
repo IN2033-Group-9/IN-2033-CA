@@ -44,6 +44,7 @@ public class Reports extends javax.swing.JPanel {
         jTable1 = new javax.swing.JTable();
 
         jPanel1.setBackground(new java.awt.Color(252, 252, 252));
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Total Sales");
@@ -72,13 +73,15 @@ public class Reports extends javax.swing.JPanel {
                 .addGap(33, 33, 33))
         );
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 1, 20)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
         jLabel3.setText("View business reports  ");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
         jLabel4.setText("Reports");
 
         jPanel2.setBackground(new java.awt.Color(252, 252, 252));
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setText("Transactions");
@@ -108,6 +111,7 @@ public class Reports extends javax.swing.JPanel {
         );
 
         jPanel3.setBackground(new java.awt.Color(252, 252, 252));
+        jPanel3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel7.setText("Orders Placed");
@@ -137,6 +141,7 @@ public class Reports extends javax.swing.JPanel {
         );
 
         jPanel4.setBackground(new java.awt.Color(252, 252, 252));
+        jPanel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel9.setText("Best performing items in the period  ");
@@ -210,14 +215,14 @@ public class Reports extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addGap(28, 28, 28)
+                .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
