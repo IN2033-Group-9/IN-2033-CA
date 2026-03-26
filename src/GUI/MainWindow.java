@@ -15,14 +15,18 @@ import javax.swing.ImageIcon;
 public class MainWindow extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainWindow.class.getName());
+    private String userRole;
 
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {
-        initComponents();
-        contentPanel.setLayout(new java.awt.BorderLayout());
-        contentPanel.add(new Dashboard(), java.awt.BorderLayout.CENTER);
+public MainWindow(String role) {
+    initComponents();
+    this.userRole = role;
+
+    contentPanel.setLayout(new java.awt.BorderLayout());
+    contentPanel.add(new Dashboard(), java.awt.BorderLayout.CENTER);
+
         
         
         
@@ -243,7 +247,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void btnCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomersActionPerformed
                                        
         contentPanel.removeAll();
-        contentPanel.add(new Customers(), java.awt.BorderLayout.CENTER);
+        contentPanel.add(new Customers(userRole), java.awt.BorderLayout.CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
     }//GEN-LAST:event_btnCustomersActionPerformed
@@ -264,7 +268,7 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public static void main(String[] args) {
     java.awt.EventQueue.invokeLater(() -> {
-        new MainWindow().setVisible(true);
+        new LoginScreen().setVisible(true);
         }); 
     }
 
