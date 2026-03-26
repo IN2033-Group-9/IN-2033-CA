@@ -1,27 +1,19 @@
 
+//Just method calls for the impl class if you need to understand how it works check comments or contact Dylan
 
 public interface CA_OnlineOrderAPI {
 
+    void processOnlineOrder(String orderID, String basketOrder);
 
-    /** 
-    * 
-    * @param orderId 
-    * @param basketOrder 
-    */
+    int checkProductStock(String productID);
 
-    abstract void processOnlineOrder(String orderID, String basketOrder);
+    String[] getMerchantCatalogue(String searchTerm);
 
-    /** 
-    * 
-    * @param productId 
-    */
+    boolean payByCard(String orderID, String cardNumber, String expiry);
 
-    abstract int checkProductStock(String productID);
+    String generateReceipt(String orderID);
 
-    /** 
-    * 
-    * @param searchTerm
-    */
+    String getOrderStatus(String orderID);
 
-    abstract String[] getMerchangtCatalogue(String searchTerm);
+    String createOrder();
 }
