@@ -7,17 +7,34 @@ package GUI;
 /**
  *
  * @author laraashour
-*
  */
 
 public class Stock extends javax.swing.JPanel {
 public Stock() {
     initComponents();
 
+    txtLowStock.setEditable(false);
+    txtLowStock.setFocusable(false);
+    txtLowStock.setHighlighter(null);
+    txtLowStock.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+    txtLowStock.setOpaque(true);
+    txtLowStock.setBackground(new java.awt.Color(242, 203, 121));
+    txtLowStock.setBorder(null);
+    txtLowStock.setLineWrap(true);
+    txtLowStock.setWrapStyleWord(true);
+
+    jScrollPane2.setBorder(null);
+    jScrollPane2.setOpaque(true);
+    jScrollPane2.setBackground(new java.awt.Color(242, 203, 121));
+    jScrollPane2.getViewport().setOpaque(true);
+    jScrollPane2.getViewport().setBackground(new java.awt.Color(242, 203, 121));
+
     jTable1.getTableHeader().setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
     jTable1.getTableHeader().setForeground(new java.awt.Color(0, 102, 204));
-
     jTable1.getTableHeader().repaint();
+
+    updateLowStockAlert();
 }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,11 +48,16 @@ public Stock() {
         lbTitle = new javax.swing.JLabel();
         lbInfo1 = new javax.swing.JLabel();
         alertPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtLowStock = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         lbTitle.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
         lbTitle.setText("Stock Management ");
@@ -47,8 +69,14 @@ public Stock() {
         alertPanel1.setBackground(new java.awt.Color(242, 203, 121));
         alertPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(149, 63, 8));
+        txtLowStock.setBackground(new java.awt.Color(240, 203, 121));
+        txtLowStock.setColumns(20);
+        txtLowStock.setRows(5);
+        txtLowStock.setBorder(null);
+        jScrollPane2.setViewportView(txtLowStock);
+
+        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 17, 0));
         jLabel2.setText("Low Stock Alert");
 
         javax.swing.GroupLayout alertPanel1Layout = new javax.swing.GroupLayout(alertPanel1);
@@ -56,16 +84,22 @@ public Stock() {
         alertPanel1Layout.setHorizontalGroup(
             alertPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(alertPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(alertPanel1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         alertPanel1Layout.setVerticalGroup(
             alertPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(alertPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, alertPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
                 .addComponent(jLabel2)
-                .addContainerGap(154, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
@@ -100,22 +134,46 @@ public Stock() {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        jButton1.setBackground(new java.awt.Color(0, 0, 51));
+        jButton1.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("+ Add Item");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+
+        jButton2.setBackground(new java.awt.Color(0, 0, 51));
+        jButton2.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Update Quantity");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
+
+        jButton3.setBackground(new java.awt.Color(0, 0, 51));
+        jButton3.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setText("- Remove Item");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbTitle)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1061, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(alertPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(161, 161, 161)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbTitle)
                     .addComponent(lbInfo1)
-                    .addComponent(alertPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(60, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 986, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,14 +183,23 @@ public Stock() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbInfo1)
                 .addGap(36, 36, 36)
-                .addComponent(alertPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(alertPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 69, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(28, 28, 28)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -140,15 +207,251 @@ public Stock() {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    javax.swing.JTextField txtProductId = new javax.swing.JTextField();
+    javax.swing.JTextField txtName = new javax.swing.JTextField();
+    javax.swing.JTextField txtQuantity = new javax.swing.JTextField();
+    javax.swing.JTextField txtLowerBound = new javax.swing.JTextField();
+    javax.swing.JTextField txtCostPrice = new javax.swing.JTextField();
+    javax.swing.JTextField txtRetailPrice = new javax.swing.JTextField();
 
+    javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+    panel.add(new javax.swing.JLabel("Product ID:"));
+    panel.add(txtProductId);
+    panel.add(new javax.swing.JLabel("Name:"));
+    panel.add(txtName);
+    panel.add(new javax.swing.JLabel("Quantity:"));
+    panel.add(txtQuantity);
+    panel.add(new javax.swing.JLabel("Lower Bound:"));
+    panel.add(txtLowerBound);
+    panel.add(new javax.swing.JLabel("Cost Price:"));
+    panel.add(txtCostPrice);
+    panel.add(new javax.swing.JLabel("Retail Price:"));
+    panel.add(txtRetailPrice);
+
+    int result = javax.swing.JOptionPane.showConfirmDialog(
+        this,
+        panel,
+        "Add New Stock Item",
+        javax.swing.JOptionPane.OK_CANCEL_OPTION,
+        javax.swing.JOptionPane.PLAIN_MESSAGE
+    );
+
+    if (result == javax.swing.JOptionPane.OK_OPTION) {
+        String productId = txtProductId.getText().trim();
+        String name = txtName.getText().trim();
+        String quantityText = txtQuantity.getText().trim();
+        String lowerBoundText = txtLowerBound.getText().trim();
+        String costPriceText = txtCostPrice.getText().trim();
+        String retailPriceText = txtRetailPrice.getText().trim();
+
+        if (productId.isEmpty() || name.isEmpty() || quantityText.isEmpty()
+                || lowerBoundText.isEmpty() || costPriceText.isEmpty() || retailPriceText.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            return;
+        }
+
+        if (!productId.matches("MED\\d+")) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Product ID must start with MED followed by numbers, e.g. MED001.");
+            return;
+        }
+
+        if (!name.matches("[A-Za-z0-9 ]{2,}")) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter a valid stock item name.");
+            return;
+        }
+
+        int quantity;
+        int lowerBound;
+        double costPrice;
+        double retailPrice;
+
+        try {
+            quantity = Integer.parseInt(quantityText);
+            lowerBound = Integer.parseInt(lowerBoundText);
+            costPrice = Double.parseDouble(costPriceText);
+            retailPrice = Double.parseDouble(retailPriceText);
+
+            if (quantity < 0 || lowerBound < 0 || costPrice < 0 || retailPrice < 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Quantity, lower bound, and prices must be 0 or greater.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter valid numeric values for quantity, lower bound, and prices.");
+            return;
+        }
+
+        javax.swing.table.DefaultTableModel model =
+            (javax.swing.table.DefaultTableModel) jTable1.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object existingId = model.getValueAt(i, 0);
+            if (existingId != null && productId.equalsIgnoreCase(existingId.toString())) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Product ID already exists. Please use a unique Product ID.");
+                return;
+            }
+        }
+
+        model.addRow(new Object[]{
+            productId,
+            name,
+            quantity,
+            lowerBound,
+            costPrice,
+            retailPrice
+        });
+
+        javax.swing.JOptionPane.showMessageDialog(this, "Stock item added successfully.");
+        
+            updateLowStockAlert();
+
+    }
+    
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    int selectedRow = jTable1.getSelectedRow();
+
+    if (selectedRow == -1) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Please select a stock item to remove.");
+        return;
+    }
+
+    int confirm = javax.swing.JOptionPane.showConfirmDialog(
+        this,
+        "Are you sure you want to delete this stock item?",
+        "Confirm Delete",
+        javax.swing.JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+        javax.swing.table.DefaultTableModel model =
+            (javax.swing.table.DefaultTableModel) jTable1.getModel();
+
+        model.removeRow(selectedRow);
+
+        javax.swing.JOptionPane.showMessageDialog(this, "Stock item removed successfully.");
+            updateLowStockAlert();
+    }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    int selectedRow = jTable1.getSelectedRow();
+
+    if (selectedRow == -1) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Please select a stock item first.");
+        return;
+    }
+
+    String newQuantityText = javax.swing.JOptionPane.showInputDialog(
+        this,
+        "Enter new quantity:"
+    );
+
+    if (newQuantityText == null) {
+        return; // user pressed cancel
+    }
+
+    newQuantityText = newQuantityText.trim();
+
+    if (newQuantityText.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Quantity cannot be empty.");
+        return;
+    }
+
+    int newQuantity;
+    try {
+        newQuantity = Integer.parseInt(newQuantityText);
+
+        if (newQuantity < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Quantity must be 0 or greater.");
+            return;
+        }
+    } catch (NumberFormatException e) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Please enter a valid whole number for quantity.");
+        return;
+    }
+
+    javax.swing.table.DefaultTableModel model =
+        (javax.swing.table.DefaultTableModel) jTable1.getModel();
+
+    model.setValueAt(newQuantity, selectedRow, 2); // column 2 = Quantity
+
+    javax.swing.JOptionPane.showMessageDialog(this, "Stock quantity updated successfully.");
+    
+        updateLowStockAlert();
+        
+    
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+private void updateLowStockAlert() {
+    StringBuilder lowStockItems = new StringBuilder();
+    int count = 0;
+
+    javax.swing.table.DefaultTableModel model =
+        (javax.swing.table.DefaultTableModel) jTable1.getModel();
+
+    for (int i = 0; i < model.getRowCount(); i++) {
+        Object qtyObj = model.getValueAt(i, 2);   // Quantity
+        Object minObj = model.getValueAt(i, 3);   // Min Stock
+        Object nameObj = model.getValueAt(i, 1);  // Name
+
+        if (qtyObj == null || minObj == null || nameObj == null) {
+            continue;
+        }
+
+        try {
+            int quantity = Integer.parseInt(qtyObj.toString());
+            int minStock = Integer.parseInt(minObj.toString());
+            String name = nameObj.toString();
+
+            if (quantity < minStock) {
+                count++;
+                lowStockItems.append("• ")
+                             .append(name)
+                             .append(" (")
+                             .append(quantity)
+                             .append("/")
+                             .append(minStock)
+                             .append(")\n\n");
+            }
+        } catch (NumberFormatException e) {
+            // ignore bad rows
+        }
+    }
+
+    if (count == 0) {
+        txtLowStock.setText("No low stock items");
+    } else {
+        txtLowStock.setText("Low Stock (" + count + " items)\n\n" + lowStockItems);
+    }
+}
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel alertPanel1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lbInfo1;
     private javax.swing.JLabel lbTitle;
+    private javax.swing.JTextArea txtLowStock;
     // End of variables declaration//GEN-END:variables
 }
