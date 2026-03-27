@@ -250,6 +250,7 @@ public class Orders extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+<<<<<<< Updated upstream
         
         
         java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
@@ -271,6 +272,9 @@ public class Orders extends javax.swing.JPanel {
             
             
         
+=======
+        // TODO add your handling code here:
+>>>>>>> Stashed changes
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
