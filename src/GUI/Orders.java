@@ -47,12 +47,12 @@ public class Orders extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        btnPlaceOrder = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -209,13 +209,6 @@ public class Orders extends javax.swing.JPanel {
 
         jTabbedPane2.addTab("Account Balance", jPanel5);
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 51));
-        jButton1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("+   Place New Order");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
         jLabel1.setText("Orders to InfoPharma");
 
@@ -252,6 +245,9 @@ public class Orders extends javax.swing.JPanel {
         jButton2.setText("View order invoice");
         jButton2.addActionListener(this::jButton2ActionPerformed);
 
+        btnPlaceOrder.setText("jButton1");
+        btnPlaceOrder.addActionListener(this::btnPlaceOrderActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -270,22 +266,19 @@ public class Orders extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(75, 75, 75)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22)
+                .addComponent(btnPlaceOrder)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(108, 108, 108))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbInfo1))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbInfo1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
@@ -293,12 +286,15 @@ public class Orders extends javax.swing.JPanel {
                         .addGap(41, 41, 41))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnPlaceOrder))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
         );
     }// </editor-fold>//GEN-END:initComponents
+
 
     
     public static String generateOrderID(){
@@ -312,33 +308,10 @@ public class Orders extends javax.swing.JPanel {
         model.addRow(row);
     }
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
 
-        
-        
-        java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
 
-        NewOrder dialog;
-        if (parentWindow instanceof java.awt.Frame) {
-            dialog = new NewOrder((java.awt.Frame) parentWindow, true, this);
-        } else {
-            dialog = new NewOrder(null, true, this);
-        }
-
-        dialog.setLocationRelativeTo(parentWindow);
-        dialog.setVisible(true);
-        
-
-        
-        
-            
-            
-            
-        
-
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }                                        
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -352,13 +325,29 @@ public class Orders extends javax.swing.JPanel {
                 "Please select an order to view the invoice of.");
             return;
         }
-
         
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void btnPlaceOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlaceOrderActionPerformed
+           java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+
+    NewOrder dialog;
+    if (parentWindow instanceof java.awt.Frame) {
+        dialog = new NewOrder((java.awt.Frame) parentWindow, true, this);
+    } else {
+        dialog = new NewOrder(null, true, this);
+    }
+
+    dialog.setLocationRelativeTo(parentWindow);
+    dialog.setVisible(true);
+
+    }//GEN-LAST:event_btnPlaceOrderActionPerformed
+
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnPlaceOrder;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
