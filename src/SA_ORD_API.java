@@ -1,117 +1,263 @@
-import java.util.*;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class SA_ORD_API {
 
-    // these are just temporary until the databases are in effect
+    private Connection conn;
 
-    // orderID -> (itemID -> quantity)
-    private Map<String, Map<Integer, Integer>> orders = new HashMap<>();
-
-    // itemID -> name
-    private Map<Integer, String> catalogue = new HashMap<>();
-
-    // itemID -> quantity
-    private Map<Integer, Integer> stock = new HashMap<>();
-
-    // used in the map to simulate the data base
-
-    public SA_ORD_API() {
-        catalogue.put(1, "Paracetamol");
-        catalogue.put(2, "Ibuprofen");
-        catalogue.put(3, "Aspirin");
-
-        stock.put(1, 50);
-        stock.put(2, 30);
-        stock.put(3, 20);
+    // how to connect to the database and run queries will be in all classes to connect and change the database
+    public SA_ORD_API(Connection conn) {
+        this.conn = conn;
     }
 
-    // create a new order
+    /**
+     * Create new order
+     */
     public String newOrder() {
-        String orderID = UUID.randomUUID().toString(); //random string as order ID so we never have repeats
-        orders.put(orderID, new HashMap<>());
+        // Generate a unique order ID using UUID
+        String orderID = UUID.randomUUID().toString();
+
+        try {
+            // sql to insert order into the database with the generated order ID and default processed status as false            
+            String sql = "INSERT INTO ca_online_orders (online_order_id, processed) VALUES (?, FALSE)";
+            // PreparedStatement is used to insert values into SQL
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, orderID);
+            // Execute the SQL 
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return orderID;
     }
 
-    // add items to an order
+    /**
+     * Add items to order
+     */
     public void addItems(String orderID, int[] itemIDs, int[] quantities) {
-        if (!orders.containsKey(orderID)) return;  // checks if order is real
-        Map<Integer, Integer> orderItems = orders.get(orderID); //retrieve the map for the order will be moved to db whenever that happens
-        for (int i = 0; i < itemIDs.length; i++) {
-            int id = itemIDs[i];
-            int qty = quantities[i];
-            if (catalogue.containsKey(id) && qty > 0) { // check if it exist and has a +ive quanty
-                orderItems.put(id, orderItems.getOrDefault(id, 0) + qty); // check for item quant if no item then it has a auto value of 0
+
+        try {
+            //Loop through all items being added
+            for (int i = 0; i < itemIDs.length; i++) {
+
+                 //Ignore 0 or -ive quantities 
+                if (quantities[i] <= 0) continue;
+
+                String sql = "INSERT INTO ca_online_order_items (online_order_item_id, online_order_id, product_id, quantity) VALUES (?, ?, ?, ?)";
+                PreparedStatement ps = conn.prepareStatement(sql);
+
+                //so no id is the same as its a primary key and doesnt use auto increment
+                ps.setInt(1, (int)(Math.random() * 100000)); 
+                ps.setString(2, orderID);
+                ps.setInt(3, itemIDs[i]);
+                ps.setInt(4, quantities[i]);
+
+                ps.executeUpdate();
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    // remove items from an order
+    /**
+     * Remove items from order
+     */
     public void removeItems(String orderID, int[] itemIDs, int[] quantities) {
-        if (!orders.containsKey(orderID)) return; // checks if order is real
-        Map<Integer, Integer> orderItems = orders.get(orderID); //retrieve the map for the order will be moved to db whenever that happens
-        for (int i = 0; i < itemIDs.length; i++) {
-            int id = itemIDs[i];
-            int qty = quantities[i];
-            if (orderItems.containsKey(id)) {
-                int newQty = orderItems.get(id) - qty;
-                if (newQty > 0) orderItems.put(id, newQty);
-                else orderItems.remove(id); 
-            } // ^^ checks if its there. if it is subtrack value is it > 0 update if = or < 0 then remove it
+
+        try {
+            for (int i = 0; i < itemIDs.length; i++) {
+
+                String select = "SELECT quantity FROM ca_online_order_items WHERE online_order_id = ? AND product_id = ?";
+                PreparedStatement psSelect = conn.prepareStatement(select);
+                psSelect.setString(1, orderID);
+                psSelect.setInt(2, itemIDs[i]);
+
+                ResultSet rs = psSelect.executeQuery();
+
+                // If the item exists in the order
+                if (rs.next()) {
+
+                    int currentQty = rs.getInt("quantity");
+
+                    // Calculate new quantity after removal
+                    int newQty = currentQty - quantities[i];
+
+                    if (newQty > 0) {
+                        // If still some left → UPDATE quantity
+                        String update = "UPDATE ca_online_order_items SET quantity = ? WHERE online_order_id = ? AND product_id = ?";
+                        PreparedStatement psUpdate = conn.prepareStatement(update);
+                        psUpdate.setInt(1, newQty);
+                        psUpdate.setString(2, orderID);
+                        psUpdate.setInt(3, itemIDs[i]);
+                        psUpdate.executeUpdate();
+
+                    } else {
+                         // If quantity becomes 0 or less → DELETE item completely
+                        String delete = "DELETE FROM ca_online_order_items WHERE online_order_id = ? AND product_id = ?";
+                        PreparedStatement psDelete = conn.prepareStatement(delete);
+                        psDelete.setString(1, orderID);
+                        psDelete.setInt(2, itemIDs[i]);
+                        psDelete.executeUpdate();
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    // submit order: only accepts if stock is enough
+    /**
+     * Submit order (check stock + reduce stock)
+     */
     public void submitOrder(String orderID) {
-        if (!orders.containsKey(orderID)) return;  
-        Map<Integer, Integer> orderItems = orders.get(orderID); // checks if order is real and get map
 
-        if (orderItems.isEmpty()) { // is it  empty
-            System.out.println("Order is empty.");
-            return;
-        }
+        try {
+            // Get items in order
+            String query = "SELECT product_id, quantity FROM ca_online_order_items WHERE online_order_id = ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, orderID);
 
-        // check if stock is sufficient for all items
-        for (Map.Entry<Integer, Integer> e : orderItems.entrySet()) {
-            int itemID = e.getKey();
-            int qty = e.getValue();
-            if (stock.getOrDefault(itemID, 0) < qty) { //checks each item with the stock if it is insufficient then it rejects the order
-                System.out.println("Order rejected: not enough stock for " + catalogue.get(itemID));
+            ResultSet rs = ps.executeQuery();
+
+            //store items temporarily in a map
+            Map<Integer, Integer> items = new HashMap<>();
+
+            while (rs.next()) {
+                items.put(rs.getInt("product_id"), rs.getInt("quantity"));
+            }
+
+            // no items in the order
+            if (items.isEmpty()) {
+                System.out.println("Order is empty.");
                 return;
             }
-        }
 
-        // reduce stock for all items in the ordeer by their quantity
-        for (Map.Entry<Integer, Integer> e : orderItems.entrySet()) {
-            int itemID = e.getKey();
-            stock.put(itemID, stock.get(itemID) - e.getValue());
-        }
+            // 2. Check stock for the items in the order
+            for (Map.Entry<Integer, Integer> e : items.entrySet()) {
 
-        System.out.println("Order accepted: " + orderID); // accepts the order
+                String stockQuery = "SELECT quantity FROM ca_stock WHERE product_id = ?";
+                PreparedStatement psStock = conn.prepareStatement(stockQuery);
+                psStock.setInt(1, e.getKey());
+
+                ResultSet rsStock = psStock.executeQuery();
+
+                if (rsStock.next()) {
+                    int stock = rsStock.getInt("quantity");
+
+                    if (stock < e.getValue()) {
+                        System.out.println("Order rejected: not enough stock for product " + e.getKey());
+                        return;
+                    }
+                }
+            }
+
+            // 3. Reduce stock in the database for the items in the order
+            for (Map.Entry<Integer, Integer> e : items.entrySet()) {
+
+                String update = "UPDATE ca_stock SET quantity = quantity - ? WHERE product_id = ?";
+                PreparedStatement psUpdate = conn.prepareStatement(update);
+
+                psUpdate.setInt(1, e.getValue());
+                psUpdate.setInt(2, e.getKey());
+                psUpdate.executeUpdate();
+            }
+
+            // 4. Mark order processed
+            String updateOrder = "UPDATE ca_online_orders SET processed = TRUE WHERE online_order_id = ?";
+            PreparedStatement psUpdateOrder = conn.prepareStatement(updateOrder);
+            psUpdateOrder.setString(1, orderID);
+            psUpdateOrder.executeUpdate();
+
+            System.out.println("Order accepted: " + orderID);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    // view order with item names and quantities
+    /**
+     * View order (readable)
+     */
     public Map<String, Integer> viewOrder(String orderID) {
-        if (!orders.containsKey(orderID)) return null; // Checks order exists
-        Map<String, Integer> result = new HashMap<>(); // Creates a new map to store readable output
-        for (Map.Entry<Integer, Integer> e : orders.get(orderID).entrySet()) {
-            result.put(catalogue.get(e.getKey()), e.getValue()); // Maps itemID to itemName and copies quantity and returns the map in written form
-        }
-        return result;
-    }
 
-    // view current stock makes the map readable
-    public Map<String, Integer> viewStock() {
         Map<String, Integer> result = new HashMap<>();
-        for (Map.Entry<Integer, Integer> e : stock.entrySet()) {
-            result.put(catalogue.get(e.getKey()), e.getValue());
+
+        try {
+            // JOIN combines product names with order items
+            String query = "SELECT p.product_name, i.quantity " +
+               "FROM ca_online_order_items i " +
+               "JOIN ca_products p ON i.product_id = p.product_id " +
+               "WHERE i.online_order_id = ?";
+
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, orderID);
+
+            ResultSet rs = ps.executeQuery();
+
+            // Store results as (product_name -> quantity)
+            while (rs.next()) {
+                result.put(rs.getString("product_name"), rs.getInt("quantity"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
         return result;
     }
 
-    // view catalogue (names only. would be itemId to name)
+    /**
+     * View stock
+     */
+    public Map<String, Integer> viewStock() {
+
+        Map<String, Integer> result = new HashMap<>();
+
+        try {
+            String query = "SELECT p.product_name, s.quantity " +
+               "FROM ca_stock s " +
+               "JOIN ca_products p ON s.product_id = p.product_id";
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                result.put(rs.getString("product_name"), rs.getInt("quantity"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Get catalogue
+     */
     public Map<Integer, String> getCatalogue() {
-        return new HashMap<>(catalogue);
+
+        Map<Integer, String> catalogue = new HashMap<>();
+
+        try {
+            String query = "SELECT product_id, product_name FROM ca_products";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                catalogue.put(rs.getInt("product_id"), rs.getString("product_name"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return catalogue;
     }
 }
-
-// i have tests for these in a seperate intellij file ask if you want to test the methods -> Dylan
