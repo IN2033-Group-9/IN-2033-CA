@@ -115,12 +115,17 @@ public class SA_LOGIN_API {
     public boolean createCustomer(int id, String name, String email) {
 
     try {
-        String sql = "INSERT INTO ca_customers (customer_id, name, email, account_holder, credit_limit, outstanding_balance, account_status) VALUES (?, ?, ?, TRUE, 0, 0, 'ACTIVE')";
+        String sql = "INSERT INTO ca_customers (customer_id, firstname, surname, dob, email, phone, houseNumber, postcode, account_holder, credit_limit, outstanding_balance, account_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE, 0, 0, 'ACTIVE')";
         PreparedStatement ps = conn.prepareStatement(sql);
 
         ps.setInt(1, id);
         ps.setString(2, name);
-        ps.setString(3, email);
+        ps.setString(3, "");
+        ps.setString(4, "1970-01-01");
+        ps.setString(5, email);
+        ps.setString(6, "");
+        ps.setInt(7, 0);
+        ps.setString(8, "");
 
         return ps.executeUpdate() > 0;
 

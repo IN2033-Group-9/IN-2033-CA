@@ -4,10 +4,12 @@ import java.util.Map;
 public class CA_OnlineOrderAPI_Impl implements CA_OnlineOrderAPI {
 
     private SA_ORD_API ordApi;
+    private SA_Merchant_API merchantApi;
     private Connection conn;
 
-    public CA_OnlineOrderAPI_Impl(SA_ORD_API ordApi, Connection conn) {
+    public CA_OnlineOrderAPI_Impl(SA_ORD_API ordApi, SA_Merchant_API merchantApi, Connection conn) {
         this.ordApi = ordApi;
+        this.merchantApi = merchantApi;
         this.conn = conn;
     }
 
@@ -223,63 +225,10 @@ public class CA_OnlineOrderAPI_Impl implements CA_OnlineOrderAPI {
     /**
      * pay using customer credit account
      */
+    @Override
     public boolean payByCredit(String orderID, int customerID, double amount) {
-
-        try {
-            //get customer's credit info
-            String sqlCustomer = "SELECT credit_limit, outstanding_balance, account_status FROM ca_customers WHERE customer_id = ?";
-            PreparedStatement psCustomer = conn.prepareStatement(sqlCustomer);
-            psCustomer.setInt(1, customerID);
-
-            ResultSet rs = psCustomer.executeQuery();
-
-            if (!rs.next()) {
-                System.out.println("Credit payment failed: customer not found");
-                return false;
-            }
-
-            double creditLimit = rs.getDouble("credit_limit");
-            double balance = rs.getDouble("outstanding_balance");
-            String status = rs.getString("account_status");
-
-            // check account is active
-            if (!status.equalsIgnoreCase("ACTIVE")) {
-                System.out.println("Credit payment failed: account not active");
-                return false;
-            }
-
-            
-            if ((balance + amount) > creditLimit) {
-                System.out.println("Credit payment failed: credit limit exceeded");
-                return false;
-            }
-
-            String updateBalance = "UPDATE ca_customers SET outstanding_balance = outstanding_balance + ? WHERE customer_id = ?";
-            PreparedStatement psUpdate = conn.prepareStatement(updateBalance);
-
-            psUpdate.setDouble(1, amount);
-            psUpdate.setInt(2, customerID);
-            psUpdate.executeUpdate();
-
-            // record payment
-            String insertPayment = "INSERT INTO ca_payments (payment_id, customer_id, payment_method, amount) VALUES (?, ?, ?, ?)";
-            PreparedStatement psPayment = conn.prepareStatement(insertPayment);
-
-            psPayment.setInt(1, (int)(Math.random() * 100000)); // TEMP
-            psPayment.setInt(2, customerID);
-            psPayment.setString(3, "CREDIT");
-            psPayment.setDouble(4, amount);
-
-            psPayment.executeUpdate();
-
-            System.out.println("Credit payment successful for order: " + orderID);
-            return true;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        // Delegate credit payment processing to Merchant API for limit monitoring
+        return merchantApi.processCreditPayment(customerID, amount);
     }
 
     /**
