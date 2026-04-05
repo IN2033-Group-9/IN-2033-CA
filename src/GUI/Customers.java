@@ -18,23 +18,31 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import database.DBConnection;
+import merchant.SA_Merchant_API_Impl;
+import java.sql.Connection;
+
 public class Customers extends javax.swing.JPanel {
     
     private String userRole;
     private final CustomerAPI customerAPI = new CustomerAPI_Impl();
-
+    private SA_Merchant_API_Impl merchantAPI; 
 
     /**
      * Creates new form Customers
      */
     public Customers() {
         initComponents();
+        Connection conn = DBConnection.getConnection();
+        merchantAPI = new SA_Merchant_API_Impl(conn);
         loadCustomersTable();
     }
     
     public Customers(String role) {
         initComponents();
         this.userRole = role;
+        Connection conn = DBConnection.getConnection();
+        merchantAPI = new SA_Merchant_API_Impl(conn);
         loadCustomersTable();
 
     }
@@ -310,53 +318,53 @@ public class Customers extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-            int selectedRow = jTable1.getSelectedRow();
+    int selectedRow = jTable1.getSelectedRow();
 
     if (selectedRow == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Please select a customer first.");
+        JOptionPane.showMessageDialog(this, "Please select a customer first.");
         return;
     }
 
-    String newLimit = javax.swing.JOptionPane.showInputDialog(
-        this,
-        "Enter new credit limit:"
-    );
+    String accountId = jTable1.getValueAt(selectedRow, 0).toString();
+
+    String newLimit = JOptionPane.showInputDialog(this, "Enter new credit limit:");
 
     if (newLimit == null) {
-        return; // user pressed cancel
+        return;
     }
 
     newLimit = newLimit.trim();
 
     if (newLimit.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Credit limit cannot be empty.");
+        JOptionPane.showMessageDialog(this, "Credit limit cannot be empty.");
         return;
     }
 
     double creditLimit;
     try {
         creditLimit = Double.parseDouble(newLimit);
-
         if (creditLimit < 0) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Credit limit must be 0 or greater.");
+            JOptionPane.showMessageDialog(this, "Credit limit must be 0 or greater.");
             return;
         }
     } catch (NumberFormatException e) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Please enter a valid number.");
+        JOptionPane.showMessageDialog(this, "Please enter a valid number.");
         return;
     }
 
-    javax.swing.table.DefaultTableModel model =
-        (javax.swing.table.DefaultTableModel) jTable1.getModel();
+    try {
+        int customerId = Integer.parseInt(accountId.substring(3));
+        boolean updated = merchantAPI.setCreditLimit(customerId, creditLimit);
 
-    model.setValueAt(creditLimit, selectedRow, 4); // column 4 = Credit Limit
-
-    javax.swing.JOptionPane.showMessageDialog(this,
-        "Credit limit updated successfully.");
+        if (updated) {
+            JOptionPane.showMessageDialog(this, "Credit limit updated successfully.");
+            loadCustomersTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update credit limit.");
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, e.getMessage());
+    }
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
