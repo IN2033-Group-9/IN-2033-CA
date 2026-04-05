@@ -6,9 +6,7 @@
 
 package GUI;
 
-import DBConnection;
-import SA_LOGIN_API;
-import Backend.*;
+
 
 
 
@@ -16,6 +14,12 @@ import Backend.*;
  *
  * @author mehzanazkhan
  */
+
+import database.DBConnection;
+import DBConnection;
+import SA_LOGIN_API;
+import Backend.*;
+
 public class ManageStaff extends javax.swing.JPanel {
     
     private SA_LOGIN_API loginAPI;

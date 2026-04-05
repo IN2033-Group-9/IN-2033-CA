@@ -4,27 +4,38 @@
  */
 package GUI;
 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
  * @author laraashour
  */
+
+import customer.Customer;
+import customer.CustomerAPI;
+import customer.CustomerAPI_Impl;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class Customers extends javax.swing.JPanel {
+    
     private String userRole;
+    private final CustomerAPI customerAPI = new CustomerAPI_Impl();
+
 
     /**
      * Creates new form Customers
      */
     public Customers() {
         initComponents();
-
+        loadCustomersTable();
     }
     
     public Customers(String role) {
         initComponents();
         this.userRole = role;
+        loadCustomersTable();
 
     }
      
@@ -49,9 +60,6 @@ public class Customers extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
@@ -83,7 +91,7 @@ public class Customers extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Account #", "Name", "Email", "Phone", "Credit Limit", "Discount Plan", "Status", "Outstanding Balance", "Last Payment Date", "Reminder 1", "Reminder 2"
+                "Account #", "Name", "Email", "Phone", "Credit Limit", "Status", "Outstanding Balance"
             }
         ));
         jScrollPane2.setViewportView(jTable1);
@@ -106,24 +114,6 @@ public class Customers extends javax.swing.JPanel {
         jButton3.setText("Update Credit Limit");
         jButton3.addActionListener(this::jButton3ActionPerformed);
 
-        jButton4.setBackground(new java.awt.Color(0, 0, 51));
-        jButton4.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Update Discount Plan");
-        jButton4.addActionListener(this::jButton4ActionPerformed);
-
-        jButton5.setBackground(new java.awt.Color(0, 0, 51));
-        jButton5.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Generate Reminder");
-        jButton5.addActionListener(this::jButton5ActionPerformed);
-
-        jButton6.setBackground(new java.awt.Color(0, 0, 51));
-        jButton6.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Reactivate Account");
-        jButton6.addActionListener(this::jButton6ActionPerformed);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -144,13 +134,9 @@ public class Customers extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton5))
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(29, 29, 29)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(66, 66, 66))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -171,14 +157,8 @@ public class Customers extends javax.swing.JPanel {
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)))
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -216,147 +196,117 @@ public class Customers extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-                                           
-    javax.swing.JTextField txtAccountId = new javax.swing.JTextField();
-    javax.swing.JTextField txtName = new javax.swing.JTextField();
-    javax.swing.JTextField txtEmail = new javax.swing.JTextField();
-    javax.swing.JTextField txtPhone = new javax.swing.JTextField();
-    javax.swing.JTextField txtCreditLimit = new javax.swing.JTextField();
+        javax.swing.JTextField txtName = new javax.swing.JTextField();
+        javax.swing.JTextField txtEmail = new javax.swing.JTextField();
+        javax.swing.JTextField txtPhone = new javax.swing.JTextField();
+        javax.swing.JTextField txtCreditLimit = new javax.swing.JTextField();
 
-    String[] discountPlans = {"None", "Fixed Discount", "Variable (Volume-Based)"};
-    javax.swing.JComboBox<String> cmbDiscountPlan = new javax.swing.JComboBox<>(discountPlans);
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+        panel.add(new javax.swing.JLabel("Name:"));
+        panel.add(txtName);
+        panel.add(new javax.swing.JLabel("Email:"));
+        panel.add(txtEmail);
+        panel.add(new javax.swing.JLabel("Phone:"));
+        panel.add(txtPhone);
+        panel.add(new javax.swing.JLabel("Credit Limit:"));
+        panel.add(txtCreditLimit);
 
-    javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
-    panel.add(new javax.swing.JLabel("Account ID:"));
-    panel.add(txtAccountId);
-    panel.add(new javax.swing.JLabel("Name:"));
-    panel.add(txtName);
-    panel.add(new javax.swing.JLabel("Email:"));
-    panel.add(txtEmail);
-    panel.add(new javax.swing.JLabel("Phone:"));
-    panel.add(txtPhone);
-    panel.add(new javax.swing.JLabel("Credit Limit:"));
-    panel.add(txtCreditLimit);
-    panel.add(new javax.swing.JLabel("Discount Plan:"));
-    panel.add(cmbDiscountPlan);
+        int result = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            panel,
+            "Add Customer",
+            javax.swing.JOptionPane.OK_CANCEL_OPTION,
+            javax.swing.JOptionPane.PLAIN_MESSAGE
+        );
 
-    int result = javax.swing.JOptionPane.showConfirmDialog(
-        this,
-        panel,
-        "Add Customer",
-        javax.swing.JOptionPane.OK_CANCEL_OPTION,
-        javax.swing.JOptionPane.PLAIN_MESSAGE
-    );
+        if (result == javax.swing.JOptionPane.OK_OPTION) {
+            String name = txtName.getText().trim();
+            String email = txtEmail.getText().trim();
+            String phone = txtPhone.getText().trim();
+            String creditLimitText = txtCreditLimit.getText().trim();
 
-    if (result == javax.swing.JOptionPane.OK_OPTION) {
-        String accountId = txtAccountId.getText().trim();
-        String name = txtName.getText().trim();
-        String email = txtEmail.getText().trim();
-        String phone = txtPhone.getText().trim();
-        String creditLimitText = txtCreditLimit.getText().trim();
-        String discountPlan = cmbDiscountPlan.getSelectedItem().toString();
-
-        // Empty field validation
-        if (accountId.isEmpty() || name.isEmpty() || email.isEmpty() || phone.isEmpty() || creditLimitText.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        // Account ID validation: must look like ACC001
-        if (!accountId.matches("ACC\\d+")) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Account ID must start with ACC followed by numbers, e.g. ACC001.");
-            return;
-        }
-
-        // Name validation: letters and spaces only, at least 2 chars
-        if (!name.matches("[A-Za-z ]{2,}")) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Please enter a valid customer name.");
-            return;
-        }
-
-        // Email validation
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Please enter a valid email address.");
-            return;
-        }
-
-        // Phone validation: 10 to 11 digits only
-        if (!phone.matches("\\d{10,11}")) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Phone number must contain 10 to 11 digits.");
-            return;
-        }
-
-        // Credit limit validation
-        double creditLimit;
-        try {
-            creditLimit = Double.parseDouble(creditLimitText);
-            if (creditLimit < 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Credit limit must be 0 or greater.");
+            if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || creditLimitText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return;
             }
-        } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Please enter a valid number for credit limit.");
-            return;
-        }
 
-        // Optional: prevent duplicate account IDs
-        javax.swing.table.DefaultTableModel model =
-            (javax.swing.table.DefaultTableModel) jTable1.getModel();
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            Object existingId = model.getValueAt(i, 0);
-            if (existingId != null && accountId.equalsIgnoreCase(existingId.toString())) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Account ID already exists. Please use a unique Account ID.");
+            if (!name.matches("[A-Za-z ]{2,}")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid customer name.");
                 return;
             }
+
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
+                return;
+            }
+
+            if (!phone.matches("\\d{10,11}")) {
+                JOptionPane.showMessageDialog(this, "Phone number must contain 10 to 11 digits.");
+                return;
+            }
+
+            double creditLimit;
+            try {
+                creditLimit = Double.parseDouble(creditLimitText);
+                if (creditLimit < 0) {
+                    JOptionPane.showMessageDialog(this, "Credit limit must be 0 or greater.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number for credit limit.");
+                return;
+            }
+
+            String[] parts = name.split("\\s+", 2);
+            String firstName = parts[0];
+            String surname = parts.length > 1 ? parts[1] : "";
+
+            try {
+                boolean added = customerAPI.addCustomer(firstName, surname, email, phone, creditLimit);
+
+                if (added) {
+                    JOptionPane.showMessageDialog(this, "Customer added successfully.");
+                    loadCustomersTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to add customer.");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
         }
-
-        // Add row to table
-        model.addRow(new Object[]{
-            accountId,
-            name,
-            email,
-            phone,
-            creditLimit,
-            discountPlan
-        });
-
-        javax.swing.JOptionPane.showMessageDialog(this, "Customer added successfully.");
-    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         int selectedRow = jTable1.getSelectedRow();
+        int selectedRow = jTable1.getSelectedRow();
 
-    if (selectedRow == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Please select a customer account to delete.");
-        return;
-    }
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a customer account to delete.");
+            return;
+        }
 
-    int confirm = javax.swing.JOptionPane.showConfirmDialog(
-        this,
-        "Are you sure you want to delete this customer account?",
-        "Confirm Delete",
-        javax.swing.JOptionPane.YES_NO_OPTION
-    );
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this customer account?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION
+        );
 
-    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-        javax.swing.table.DefaultTableModel model =
-            (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        if (confirm == JOptionPane.YES_OPTION) {
+            String accountId = jTable1.getValueAt(selectedRow, 0).toString();
 
-        model.removeRow(selectedRow);
+            try {
+                boolean deleted = customerAPI.deleteCustomer(accountId);
 
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Customer account deleted successfully.");
-    }
+                if (deleted) {
+                    JOptionPane.showMessageDialog(this, "Customer account deleted successfully.");
+                    loadCustomersTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete customer account.");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -410,139 +360,35 @@ public class Customers extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-            int selectedRow = jTable1.getSelectedRow();
-
-    if (selectedRow == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Please select a customer first.");
-        return;
-    }
-
-    String[] discountPlans = {"None", "Fixed Discount", "Variable (Volume-Based)"};
-
-    String selectedPlan = (String) javax.swing.JOptionPane.showInputDialog(
-        this,
-        "Select new discount plan:",
-        "Update Discount Plan",
-        javax.swing.JOptionPane.QUESTION_MESSAGE,
-        null,
-        discountPlans,
-        discountPlans[0]
-    );
-
-    if (selectedPlan == null) {
-        return; // user pressed cancel
-    }
-
-    javax.swing.table.DefaultTableModel model =
-        (javax.swing.table.DefaultTableModel) jTable1.getModel();
-
-    model.setValueAt(selectedPlan, selectedRow, 5); // column 5 = Discount Plan
-
-    javax.swing.JOptionPane.showMessageDialog(this,
-        "Discount plan updated successfully.");
-
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-            int selectedRow = jTable1.getSelectedRow();
-
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select a customer first.");
-        return;
-    }
-
-    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-
-    double balance;
+    private void loadCustomersTable() {
     try {
-        balance = Double.parseDouble(model.getValueAt(selectedRow, 7).toString());
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // clear table
+
+        List<Customer> customers = customerAPI.getAllCustomers();
+
+        for (Customer c : customers) {
+            model.addRow(new Object[]{
+                c.getAccountId(),
+                c.getFirstName(),
+                c.getEmail(),
+                c.getPhone(),
+                c.getCreditLimit(),
+                c.getAccountStatus(),
+                c.getOutstandingBalance()
+            });
+        }
+
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Invalid balance value.");
-        return;
+        JOptionPane.showMessageDialog(this, "Error loading customers: " + e.getMessage());
     }
-
-    if (balance <= 0) {
-        JOptionPane.showMessageDialog(this, "No outstanding balance. No reminder needed.");
-        return;
-    }
-
-    String[] options = {"1st Reminder", "2nd Reminder"};
-
-    String choice = (String) JOptionPane.showInputDialog(
-        this,
-        "Select reminder type:",
-        "Generate Reminder",
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]
-    );
-
-    if (choice == null) return;
-
-    if (choice.equals("1st Reminder")) {
-        model.setValueAt("Sent", selectedRow, 9);
-        JOptionPane.showMessageDialog(this, "1st reminder sent.");
-    } else {
-        model.setValueAt("Sent", selectedRow, 10);
-        JOptionPane.showMessageDialog(this, "2nd reminder sent.");
-    }
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-            if (userRole == null || !userRole.equalsIgnoreCase("Manager")) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Access denied. Only managers can reactivate accounts.");
-        return;
-    }
-
-    int selectedRow = jTable1.getSelectedRow();
-
-    if (selectedRow == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Please select a customer first.");
-        return;
-    }
-
-    javax.swing.table.DefaultTableModel model =
-        (javax.swing.table.DefaultTableModel) jTable1.getModel();
-
-    String status = model.getValueAt(selectedRow, 6).toString();
-
-    if (!status.equalsIgnoreCase("In Default")) {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Only accounts in Default can be reactivated.");
-        return;
-    }
-
-    int confirm = javax.swing.JOptionPane.showConfirmDialog(
-        this,
-        "Are you sure you want to reactivate this account?",
-        "Confirm Reactivation",
-        javax.swing.JOptionPane.YES_NO_OPTION
-    );
-
-    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-        model.setValueAt("Normal", selectedRow, 6);
-        model.setValueAt("Not Sent", selectedRow, 9);
-        model.setValueAt("Not Sent", selectedRow, 10);
-
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Account reactivated successfully.");
-    }
-
-    }//GEN-LAST:event_jButton6ActionPerformed
-
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label CustomerJpanel2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

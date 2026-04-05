@@ -9,7 +9,7 @@ public class DBTest {
         try {
             Connection conn = DriverManager.getConnection("jdbc:sqlite:/workspaces/IN-2033/SQL/CA_db.db");
 
-            System.out.println("Connected ✅");
+            System.out.println("Connected ");
 
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
@@ -21,7 +21,7 @@ public class DBTest {
             }
 
         } catch (Exception e) {
-            System.out.println("Connection failed ❌");
+            System.out.println("Connection failed ");
             e.printStackTrace();
         }
     }
