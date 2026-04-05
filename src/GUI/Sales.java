@@ -668,7 +668,7 @@ public class Sales extends javax.swing.JPanel {
             (javax.swing.table.DefaultTableModel) jTable1.getModel();
         javax.swing.table.DefaultTableModel invoiceModel = new javax.swing.table.DefaultTableModel(
             new Object[][] {},
-            new String[] {"Product ID", "Name", "Quantity", "Unit Price", "Total"}
+            new String[] {"Item", "Packages", "Package Cost, £", "Amount, £"}
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -678,11 +678,10 @@ public class Sales extends javax.swing.JPanel {
 
         for (int row = 0; row < sourceModel.getRowCount(); row++) {
             invoiceModel.addRow(new Object[] {
-                sourceModel.getValueAt(row, 0),
                 sourceModel.getValueAt(row, 1),
                 sourceModel.getValueAt(row, 2),
-                sourceModel.getValueAt(row, 3),
-                sourceModel.getValueAt(row, 4)
+                stripCurrency(String.valueOf(sourceModel.getValueAt(row, 3))),
+                stripCurrency(String.valueOf(sourceModel.getValueAt(row, 4)))
             });
         }
 
@@ -690,18 +689,94 @@ public class Sales extends javax.swing.JPanel {
         invoiceTable.setRowHeight(22);
         invoiceTable.getTableHeader().setReorderingAllowed(false);
         invoiceTable.setEnabled(false);
+        invoiceTable.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 13));
+        invoiceTable.getTableHeader().setFont(new java.awt.Font("Serif", java.awt.Font.BOLD, 13));
+        invoiceTable.setShowGrid(true);
+        invoiceTable.setGridColor(java.awt.Color.DARK_GRAY);
 
         javax.swing.JScrollPane tableScrollPane = new javax.swing.JScrollPane(invoiceTable);
-        tableScrollPane.setPreferredSize(new java.awt.Dimension(620, 180));
+        tableScrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY));
+        tableScrollPane.setPreferredSize(new java.awt.Dimension(460, 165));
 
-        javax.swing.JTextArea summaryArea = new javax.swing.JTextArea(buildInvoiceSummary());
-        summaryArea.setEditable(false);
-        summaryArea.setOpaque(false);
-        summaryArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 13));
+        javax.swing.JLabel titleLabel = new javax.swing.JLabel("9.7 Appendix 7: Retail Invoice");
+        titleLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 18));
 
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.BorderLayout(0, 12));
-        panel.add(tableScrollPane, java.awt.BorderLayout.CENTER);
-        panel.add(summaryArea, java.awt.BorderLayout.SOUTH);
+        javax.swing.JLabel briefLabel = new javax.swing.JLabel("InfoPharma ORDERING SYSTEM: STUDENT'S BRIEF");
+        briefLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
+
+        javax.swing.JTextArea leftAddress = createInvoiceTextArea(buildCustomerAddressBlock());
+        javax.swing.JTextArea rightAddress = createInvoiceTextArea(
+            "Cosymed Ltd.,\n"
+            + "3, High Level Drive,\n"
+            + "Sydenham,\n"
+            + "SE26 3ET\n"
+            + "Phone: 0208 778 0124\n"
+            + "Fax: 0208 778 0125"
+        );
+        javax.swing.JPanel headerPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        headerPanel.setOpaque(false);
+        headerPanel.add(titleLabel, java.awt.BorderLayout.WEST);
+        headerPanel.add(briefLabel, java.awt.BorderLayout.EAST);
+
+        javax.swing.JPanel addressPanel = new javax.swing.JPanel(new java.awt.GridLayout(1, 2, 80, 0));
+        addressPanel.setOpaque(false);
+        addressPanel.add(leftAddress);
+        addressPanel.add(rightAddress);
+
+        javax.swing.JPanel introPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        introPanel.setOpaque(false);
+
+        javax.swing.JLabel dearLabel = new javax.swing.JLabel("Dear Customer,");
+        dearLabel.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 14));
+        introPanel.add(dearLabel, java.awt.BorderLayout.WEST);
+
+        javax.swing.JPanel metaPanel = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, 8));
+        metaPanel.setOpaque(false);
+
+        javax.swing.JLabel invoiceLabel = new javax.swing.JLabel("INVOICE NO.: 197362", javax.swing.SwingConstants.CENTER);
+        invoiceLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 16));
+
+        javax.swing.JLabel accountLabel = new javax.swing.JLabel(buildInvoiceAccountLine());
+        accountLabel.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 14));
+
+        metaPanel.add(invoiceLabel);
+        metaPanel.add(accountLabel);
+
+        javax.swing.JPanel metaWrapper = new javax.swing.JPanel();
+        metaWrapper.setOpaque(false);
+        metaWrapper.setLayout(new javax.swing.BoxLayout(metaWrapper, javax.swing.BoxLayout.Y_AXIS));
+        metaWrapper.add(javax.swing.Box.createVerticalStrut(6));
+        metaWrapper.add(metaPanel);
+
+        introPanel.add(metaWrapper, java.awt.BorderLayout.CENTER);
+
+        javax.swing.JPanel tablePanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        tablePanel.setOpaque(false);
+        tablePanel.add(tableScrollPane, java.awt.BorderLayout.CENTER);
+        tablePanel.add(buildTotalsPanel(), java.awt.BorderLayout.SOUTH);
+
+        javax.swing.JTextArea closingArea = createInvoiceTextArea(buildInvoiceFooterBlock());
+        closingArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
+        javax.swing.JPanel closingPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        closingPanel.setOpaque(false);
+        closingPanel.add(closingArea, java.awt.BorderLayout.CENTER);
+
+        javax.swing.JPanel panel = new javax.swing.JPanel();
+        panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+        panel.setBackground(java.awt.Color.WHITE);
+        panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 18, 16, 18));
+        panel.add(headerPanel);
+        panel.add(javax.swing.Box.createVerticalStrut(24));
+        panel.add(addressPanel);
+        panel.add(javax.swing.Box.createVerticalStrut(18));
+        panel.add(createInvoiceTextArea(buildInvoiceDateBlock()));
+        panel.add(javax.swing.Box.createVerticalStrut(18));
+        panel.add(introPanel);
+        panel.add(javax.swing.Box.createVerticalStrut(14));
+        panel.add(tablePanel);
+        panel.add(javax.swing.Box.createVerticalStrut(18));
+        panel.add(closingPanel);
 
         javax.swing.JOptionPane.showMessageDialog(
             this,
@@ -711,23 +786,91 @@ public class Sales extends javax.swing.JPanel {
         );
     }
 
-    private String buildInvoiceSummary() {
-        String customerType = String.valueOf(jComboBox2.getSelectedItem());
+    private javax.swing.JTextArea createInvoiceTextArea(String text) {
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(text);
+        textArea.setEditable(false);
+        textArea.setOpaque(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 14));
+        textArea.setAlignmentX(LEFT_ALIGNMENT);
+        return textArea;
+    }
+
+    private String buildCustomerAddressBlock() {
+        String customerName = "Occasional Customer".equals(String.valueOf(jComboBox2.getSelectedItem()))
+            ? "Walk-in Customer"
+            : "Account Holder";
+        String accountId = jTextField2.getText().trim().isEmpty() ? "CSM000123" : jTextField2.getText().trim();
+
+        return customerName + "\n"
+            + "27 Sainsbury Close,\n"
+            + "Stratford,\n"
+            + "Essex EJ6 5TJ\n\n"
+            + "Account No: " + accountId;
+    }
+
+    private String buildInvoiceDateBlock() {
+        String invoiceDate = java.time.LocalDate.now()
+            .format(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy"));
+        return invoiceDate;
+    }
+
+    private String buildInvoiceAccountLine() {
+        String accountId = jTextField2.getText().trim().isEmpty() ? "CSM000123" : jTextField2.getText().trim();
+        return "Account No: " + accountId;
+    }
+
+    private String buildInvoiceFooterBlock() {
         String paymentMethod = String.valueOf(jComboBox5.getSelectedItem());
         String paymentDetails = cardSummary.isEmpty() ? paymentMethod : paymentMethod + " (" + cardSummary + ")";
-        String accountId = jTextField2.getText().trim().isEmpty() ? "N/A" : jTextField2.getText().trim();
 
-        StringBuilder summary = new StringBuilder();
-        summary.append("Customer Type: ").append(customerType).append('\n');
-        if ("Account Holder".equals(customerType)) {
-            summary.append("Account ID: ").append(accountId).append('\n');
-        }
-        summary.append("Payment Method: ").append(paymentDetails).append('\n');
-        summary.append("Subtotal: ").append(jLabel19.getText()).append('\n');
-        summary.append("Discount: ").append(jLabel25.getText()).append('\n');
-        summary.append("VAT: ").append(jLabel21.getText()).append('\n');
-        summary.append("Total: ").append(jLabel22.getText());
-        return summary.toString();
+        return "Payment Method: " + paymentDetails
+            + "\n\nThank you for your valued custom. We look forward to receiving your payment in due course."
+            + "\n\nYours sincerely,\n\nJ. Faith";
+    }
+
+    private javax.swing.JPanel buildTotalsPanel() {
+        javax.swing.JPanel totalsPanel = new javax.swing.JPanel(new java.awt.GridLayout(4, 2, 0, 0));
+        totalsPanel.setOpaque(false);
+        totalsPanel.setMaximumSize(new java.awt.Dimension(220, 96));
+        totalsPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY),
+            javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0)
+        ));
+
+        totalsPanel.add(createTotalsCell("Subtotal", true));
+        totalsPanel.add(createTotalsCell(stripCurrency(jLabel19.getText()), false));
+        totalsPanel.add(createTotalsCell("Discount", true));
+        totalsPanel.add(createTotalsCell(stripCurrency(jLabel25.getText()), false));
+        totalsPanel.add(createTotalsCell("VAT @ 20%", true));
+        totalsPanel.add(createTotalsCell(stripCurrency(jLabel21.getText()), false));
+        totalsPanel.add(createTotalsCell("Amount Due", true));
+        totalsPanel.add(createTotalsCell(stripCurrency(jLabel22.getText()), false));
+
+        javax.swing.JPanel wrapper = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
+        wrapper.setOpaque(false);
+        wrapper.add(totalsPanel);
+        return wrapper;
+    }
+
+    private javax.swing.JLabel createTotalsCell(String text, boolean leftAligned) {
+        javax.swing.JLabel label = new javax.swing.JLabel(text);
+        label.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 13));
+        label.setOpaque(true);
+        label.setBackground(java.awt.Color.WHITE);
+        label.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY),
+            javax.swing.BorderFactory.createEmptyBorder(4, 8, 4, 8)
+        ));
+        label.setHorizontalAlignment(leftAligned
+            ? javax.swing.SwingConstants.LEFT
+            : javax.swing.SwingConstants.RIGHT);
+        return label;
+    }
+
+    private String stripCurrency(String value) {
+        return value.replace("£", "").replace("Â£", "").replace("Ã‚Â£", "").trim();
     }
 
     private void updateAccountIdVisibility() {
