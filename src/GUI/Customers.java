@@ -33,6 +33,19 @@ public class Customers extends javax.swing.JPanel {
      */
 public Customers() {
     initComponents();
+    
+    jTextField1.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+    public void insertUpdate(javax.swing.event.DocumentEvent e) {
+        filterCustomers();
+    }
+    public void removeUpdate(javax.swing.event.DocumentEvent e) {
+        filterCustomers();
+    }
+    public void changedUpdate(javax.swing.event.DocumentEvent e) {
+        filterCustomers();
+    }
+});
+    
     Connection conn = DBConnection.getConnection();
     merchantAPI = new SA_Merchant_API_Impl(conn);
 
@@ -46,8 +59,23 @@ public Customers() {
     loadCustomersTable();
 }
 
+
+
 public Customers(String role) {
     initComponents();
+    
+    jTextField1.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+    public void insertUpdate(javax.swing.event.DocumentEvent e) {
+        filterCustomers();
+    }
+    public void removeUpdate(javax.swing.event.DocumentEvent e) {
+        filterCustomers();
+    }
+    public void changedUpdate(javax.swing.event.DocumentEvent e) {
+        filterCustomers();
+    }
+});
+    
     this.userRole = role;
     Connection conn = DBConnection.getConnection();
     merchantAPI = new SA_Merchant_API_Impl(conn);
@@ -227,88 +255,143 @@ public Customers(String role) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+         filterCustomers();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        javax.swing.JTextField txtName = new javax.swing.JTextField();
-        javax.swing.JTextField txtEmail = new javax.swing.JTextField();
-        javax.swing.JTextField txtPhone = new javax.swing.JTextField();
-        javax.swing.JTextField txtCreditLimit = new javax.swing.JTextField();
+                                    
+    javax.swing.JTextField txtName = new javax.swing.JTextField();
+    javax.swing.JTextField txtDob = new javax.swing.JTextField();
+    javax.swing.JTextField txtEmail = new javax.swing.JTextField();
+    javax.swing.JTextField txtPhone = new javax.swing.JTextField();
+    javax.swing.JTextField txtHouseNumber = new javax.swing.JTextField();
+    javax.swing.JTextField txtPostcode = new javax.swing.JTextField();
+    javax.swing.JTextField txtCreditLimit = new javax.swing.JTextField();
 
-        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
-        panel.add(new javax.swing.JLabel("Name:"));
-        panel.add(txtName);
-        panel.add(new javax.swing.JLabel("Email:"));
-        panel.add(txtEmail);
-        panel.add(new javax.swing.JLabel("Phone:"));
-        panel.add(txtPhone);
-        panel.add(new javax.swing.JLabel("Credit Limit:"));
-        panel.add(txtCreditLimit);
+    javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1, 5, 5));
+    panel.add(new javax.swing.JLabel("Name:"));
+    panel.add(txtName);
+    panel.add(new javax.swing.JLabel("Date of Birth (YYYY-MM-DD):"));
+    panel.add(txtDob);
+    panel.add(new javax.swing.JLabel("Email:"));
+    panel.add(txtEmail);
+    panel.add(new javax.swing.JLabel("Phone:"));
+    panel.add(txtPhone);
+    panel.add(new javax.swing.JLabel("House Number:"));
+    panel.add(txtHouseNumber);
+    panel.add(new javax.swing.JLabel("Postcode:"));
+    panel.add(txtPostcode);
+    panel.add(new javax.swing.JLabel("Credit Limit:"));
+    panel.add(txtCreditLimit);
 
-        int result = javax.swing.JOptionPane.showConfirmDialog(
-            this,
-            panel,
-            "Add Customer",
-            javax.swing.JOptionPane.OK_CANCEL_OPTION,
-            javax.swing.JOptionPane.PLAIN_MESSAGE
-        );
+    int result = javax.swing.JOptionPane.showConfirmDialog(
+        this,
+        panel,
+        "Add Customer",
+        javax.swing.JOptionPane.OK_CANCEL_OPTION,
+        javax.swing.JOptionPane.PLAIN_MESSAGE
+    );
 
-        if (result == javax.swing.JOptionPane.OK_OPTION) {
-            String name = txtName.getText().trim();
-            String email = txtEmail.getText().trim();
-            String phone = txtPhone.getText().trim();
-            String creditLimitText = txtCreditLimit.getText().trim();
+    if (result == javax.swing.JOptionPane.OK_OPTION) {
+        String name = txtName.getText().trim();
+        String dob = txtDob.getText().trim();
+        String email = txtEmail.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String houseNumberText = txtHouseNumber.getText().trim();
+        String postcode = txtPostcode.getText().trim();
+        String creditLimitText = txtCreditLimit.getText().trim();
 
-            if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || creditLimitText.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-                return;
-            }
-
-            if (!name.matches("[A-Za-z ]{2,}")) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid customer name.");
-                return;
-            }
-
-            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
-                return;
-            }
-
-            if (!phone.matches("\\d{10,11}")) {
-                JOptionPane.showMessageDialog(this, "Phone number must contain 10 to 11 digits.");
-                return;
-            }
-
-            double creditLimit;
-            try {
-                creditLimit = Double.parseDouble(creditLimitText);
-                if (creditLimit < 0) {
-                    JOptionPane.showMessageDialog(this, "Credit limit must be 0 or greater.");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid number for credit limit.");
-                return;
-            }
-
-            String[] parts = name.split("\\s+", 2);
-            String firstName = parts[0];
-            String surname = parts.length > 1 ? parts[1] : "";
-
-            try {
-                boolean added = customerAPI.addCustomer(firstName, surname, email, phone, creditLimit);
-
-                if (added) {
-                    JOptionPane.showMessageDialog(this, "Customer added successfully.");
-                    loadCustomersTable();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to add customer.");
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, e.getMessage());
-            }
+        // Empty validation
+        if (name.isEmpty() || dob.isEmpty() || email.isEmpty() || phone.isEmpty()
+                || houseNumberText.isEmpty() || postcode.isEmpty() || creditLimitText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            return;
         }
+
+        // Name validation
+        if (!name.matches("[A-Za-z ]{2,}")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid customer name.");
+            return;
+        }
+
+        // DOB validation
+        if (!dob.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            JOptionPane.showMessageDialog(this, "DOB must be in format YYYY-MM-DD.");
+            return;
+        }
+
+        // Email validation
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
+            return;
+        }
+
+        // Phone validation
+        if (!phone.matches("\\d{10,11}")) {
+            JOptionPane.showMessageDialog(this, "Phone number must contain 10 to 11 digits.");
+            return;
+        }
+
+        // House number validation
+        int houseNumber;
+        try {
+            houseNumber = Integer.parseInt(houseNumberText);
+            if (houseNumber <= 0) {
+                JOptionPane.showMessageDialog(this, "House number must be greater than 0.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "House number must be a valid number.");
+            return;
+        }
+
+        // Postcode validation
+        if (postcode.length() < 4) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid postcode.");
+            return;
+        }
+
+        // Credit limit validation
+        double creditLimit;
+        try {
+            creditLimit = Double.parseDouble(creditLimitText);
+            if (creditLimit < 0) {
+                JOptionPane.showMessageDialog(this, "Credit limit must be 0 or greater.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number for credit limit.");
+            return;
+        }
+
+        // Split name
+        String[] parts = name.split("\\s+", 2);
+        String firstName = parts[0];
+        String surname = parts.length > 1 ? parts[1] : "";
+
+        try {
+            boolean added = customerAPI.addCustomer(
+                firstName,
+                surname,
+                dob,
+                email,
+                phone,
+                houseNumber,
+                postcode,
+                creditLimit
+            );
+
+            if (added) {
+                JOptionPane.showMessageDialog(this, "Customer added successfully.");
+                loadCustomersTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to add customer.");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -472,7 +555,40 @@ public Customers(String role) {
     }
 }
     
+private void filterCustomers() {
+    try {
+        String searchText = jTextField1.getText().trim().toLowerCase();
 
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        List<Customer> customers = customerAPI.getAllCustomers();
+
+        for (Customer c : customers) {
+            String accountId = c.getAccountId().toLowerCase();
+            String name = c.getFirstName().toLowerCase();
+            String email = c.getEmail().toLowerCase();
+
+            if (accountId.contains(searchText) ||
+                name.contains(searchText) ||
+                email.contains(searchText)) {
+
+                model.addRow(new Object[]{
+                    c.getAccountId(),
+                    c.getFirstName(),
+                    c.getEmail(),
+                    c.getPhone(),
+                    c.getCreditLimit(),
+                    c.getAccountStatus(),
+                    c.getOutstandingBalance()
+                });
+            }
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Search error: " + e.getMessage());
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label CustomerJpanel2;

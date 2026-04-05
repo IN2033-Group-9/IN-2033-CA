@@ -28,33 +28,42 @@ public class CustomerAPI_Impl implements CustomerAPI  {
         return String.format("ACC%03d", customerId);
     }
 
-    @Override
-    public boolean addCustomer(String firstName, String surname, String email, String phone,
-                               double creditLimit) throws Exception {
+@Override
+public boolean addCustomer(String firstName,
+                           String surname,
+                           String dob,
+                           String email,
+                           String phone,
+                           int houseNumber,
+                           String postcode,
+                           double creditLimit) throws Exception {
 
-        String sql = "INSERT INTO ca_customers " +
-                     "(firstname, surname, email, phone, credit_limit, outstanding_balance, account_status, account_holder) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO ca_customers " +
+                 "(firstname, surname, dob, email, phone, houseNumber, postcode, credit_limit, outstanding_balance, account_status, account_holder) " +
+                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            if (conn == null) {
-                throw new Exception("Database connection failed.");
-            }
-
-            ps.setString(1, firstName);
-            ps.setString(2, surname);
-            ps.setString(3, email);
-            ps.setString(4, phone);
-            ps.setDouble(5, creditLimit);
-            ps.setDouble(6, 0.0);
-            ps.setString(7, "NORMAL");
-            ps.setInt(8, 1);
-
-            return ps.executeUpdate() > 0;
+        if (conn == null) {
+            throw new Exception("Database connection failed.");
         }
+
+        ps.setString(1, firstName);
+        ps.setString(2, surname);
+        ps.setString(3, dob);
+        ps.setString(4, email);
+        ps.setString(5, phone);
+        ps.setInt(6, houseNumber);
+        ps.setString(7, postcode);
+        ps.setDouble(8, creditLimit);
+        ps.setDouble(9, 0.0);
+        ps.setString(10, "NORMAL");
+        ps.setInt(11, 1);
+
+        return ps.executeUpdate() > 0;
     }
+}
 
     @Override
     public List<Customer> getAllCustomers() throws Exception {

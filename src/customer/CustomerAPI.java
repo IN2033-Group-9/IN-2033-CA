@@ -12,7 +12,13 @@ import java.util.List;
  */
 
 public interface CustomerAPI {
-    boolean addCustomer(String firstName, String surname, String email, String phone,
+    boolean addCustomer(String firstName,
+                        String surname,
+                        String dob,
+                        String email,
+                        String phone,
+                        int houseNumber,
+                        String postcode,
                         double creditLimit) throws Exception;
 
     List<Customer> getAllCustomers() throws Exception;
@@ -20,6 +26,6 @@ public interface CustomerAPI {
     boolean deleteCustomer(String accountId) throws Exception;
 
     boolean customerExists(String accountId) throws Exception;
-    
+
     void normaliseStatuses() throws Exception;
 }
