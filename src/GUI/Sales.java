@@ -4,6 +4,12 @@
  */
 package GUI;
 
+import database.DBConnection;
+import java.util.ArrayList;
+import java.util.List;
+import merchant.SA_Merchant_API;
+import merchant.SA_Merchant_API_Impl;
+
 /**
  *
  * @author LukeBravermanCityUniversity
@@ -19,6 +25,9 @@ public class Sales extends javax.swing.JPanel {
     };
     private boolean cardDetailsCaptured;
     private String cardSummary = "";
+    private String cardNumberForBackend = "";
+    private String cardExpiryForBackend = "";
+    private final SA_Merchant_API merchantAPI = new SA_Merchant_API_Impl(DBConnection.getConnection());
 
     /**
      * Creates new form Sales
@@ -651,6 +660,21 @@ public class Sales extends javax.swing.JPanel {
             }
         }
 
+        double totalAmount = parseCurrency(jLabel22.getText());
+        callPaymentBackend(totalAmount);
+
+        boolean recorded = merchantAPI.recordCustomerPurchase(
+            getSelectedCustomerId(),
+            buildSaleItemsForBackend(model),
+            totalAmount,
+            String.valueOf(jComboBox5.getSelectedItem())
+        );
+
+        if (!recorded) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Sale could not be recorded.");
+            return;
+        }
+
         showRetailInvoice();
 
         model.setRowCount(0);
@@ -660,7 +684,60 @@ public class Sales extends javax.swing.JPanel {
         jComboBox5.setSelectedIndex(0);
         cardDetailsCaptured = false;
         cardSummary = "";
+        cardNumberForBackend = "";
+        cardExpiryForBackend = "";
         updateSummary();
+    }
+
+    private void callPaymentBackend(double totalAmount) {
+        String paymentMethod = String.valueOf(jComboBox5.getSelectedItem());
+        String posOrderId = generateFrontendOrderId();
+
+        if ("Card".equalsIgnoreCase(paymentMethod)) {
+            merchantAPI.processCardPayment(posOrderId, cardNumberForBackend, cardExpiryForBackend, totalAmount);
+        } else if ("Cash".equalsIgnoreCase(paymentMethod)) {
+            merchantAPI.processCashPayment(posOrderId, totalAmount);
+        } else if ("Account".equalsIgnoreCase(paymentMethod) || "Credit".equalsIgnoreCase(paymentMethod)) {
+            merchantAPI.processCreditPayment(getSelectedCustomerId(), totalAmount);
+        } else {
+            System.out.println("No matching backend payment method for: " + paymentMethod);
+        }
+    }
+
+    private String generateFrontendOrderId() {
+        return "POS-" + java.time.LocalDateTime.now()
+            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+            + "-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    private List<Object[]> buildSaleItemsForBackend(javax.swing.table.DefaultTableModel model) {
+        List<Object[]> saleItems = new ArrayList<>();
+
+        for (int row = 0; row < model.getRowCount(); row++) {
+            int productId = parseIdNumber(String.valueOf(model.getValueAt(row, 0)));
+            int quantity = Integer.parseInt(String.valueOf(model.getValueAt(row, 2)));
+            double unitPrice = parseCurrency(String.valueOf(model.getValueAt(row, 3)));
+
+            saleItems.add(new Object[] {productId, quantity, unitPrice});
+        }
+
+        return saleItems;
+    }
+
+    private int getSelectedCustomerId() {
+        if (!"Account Holder".equals(String.valueOf(jComboBox2.getSelectedItem()))) {
+            return 0;
+        }
+
+        return parseIdNumber(jTextField2.getText().trim());
+    }
+
+    private int parseIdNumber(String value) {
+        String digitsOnly = value.replaceAll("\\D+", "");
+        if (digitsOnly.isEmpty()) {
+            return 0;
+        }
+        return Integer.parseInt(digitsOnly);
     }
 
     private void showRetailInvoice() {
@@ -935,6 +1012,8 @@ public class Sales extends javax.swing.JPanel {
         String lastFour = cardNumber.substring(cardNumber.length() - 4);
         cardDetailsCaptured = true;
         cardSummary = "ending " + lastFour;
+        cardNumberForBackend = cardNumber;
+        cardExpiryForBackend = expiry;
         return true;
     }
 

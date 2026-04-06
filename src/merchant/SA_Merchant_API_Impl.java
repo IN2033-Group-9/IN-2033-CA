@@ -425,6 +425,41 @@ public boolean recordAccountPayment(int customerID, double amount) {
     return false;
 }
 
+• // NOTE FROM LUKE:
+    // On the Sales screen, the frontend already calls the correct backend payment method
+    // depending on whether the customer pays by CARD or CASH.
+    //
+    // This method is separate from taking payment.
+    // Its purpose is to record what the customer actually bought.
+    //
+    // The frontend currently calls this method and passes in the sale items.
+    // Later, (i think) this method should save those sale items to the SQL database,
+    // probably into ca_sales and ca_sale_items. Let me know if i got anything wrong.
+
+    //    System.out.println("Recording customer purchase (stub only - no database write yet)");
+    //    System.out.println("Customer ID: " + customerID);
+    //    System.out.println("Total Amount: " + totalAmount);
+    //    System.out.println("Payment Method: " + paymentMethod);
+    //    System.out.println("Sale Items:");
+    //
+    //    if (saleItems == null || saleItems.isEmpty()) {
+    //        System.out.println("  No sale items supplied");
+    //    } else {
+    //        for (Object[] item : saleItems) {
+    //            Object productId = item.length > 0 ? item[0] : "UNKNOWN";
+    //            Object quantity = item.length > 1 ? item[1] : "UNKNOWN";
+    //            Object unitPrice = item.length > 2 ? item[2] : "UNKNOWN";
+    //
+    //            System.out.println("  Product ID: " + productId
+    //                + ", Quantity: " + quantity
+    //                + ", Unit Price: " + unitPrice);
+    //        }
+    //    }
+
+    System.out.println("Next backend step: insert into ca_sales, ca_sale_items, and ca_payments.");
+    return true;
+}
+
     /**
      * statement making
      * creates statements for account holders with unpaid balances from previous month
