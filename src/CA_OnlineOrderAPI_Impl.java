@@ -7,12 +7,16 @@ import java.util.Map;
 public class CA_OnlineOrderAPI_Impl implements CA_OnlineOrderAPI {
 
     private SA_ORD_API ordApi;
+    private SA_Stock_API stockApi;
     private SA_Merchant_API merchantApi;
     private Connection conn;
 
-    public CA_OnlineOrderAPI_Impl(SA_ORD_API ordApi, SA_Merchant_API merchantApi, Connection conn) {
+    
+
+    public CA_OnlineOrderAPI_Impl(SA_ORD_API ordApi, SA_Merchant_API merchantApi, SA_Stock_API stockApi, Connection conn) {
         this.ordApi = ordApi;
         this.merchantApi = merchantApi;
+        this.stockApi = stockApi;
         this.conn = conn;
     }
 
