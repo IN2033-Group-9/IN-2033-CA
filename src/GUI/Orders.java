@@ -12,14 +12,14 @@ package GUI;
 
 import sa_orders.SA_ORD_API;
 import database.DBConnection;
-import ca_online_orders.CA_OnlineOrderAPI_Impl;
+//import ca_online_orders.CA_OnlineOrderAPI_Impl;
 
 
 public class Orders extends javax.swing.JPanel {
 
     private static int orderCounter = 1;
     private SA_ORD_API saOrdApi;
-    private CA_OnlineOrderAPI_Impl orderApi;
+    //private CA_OnlineOrderAPI_Impl orderApi;
     
     
     /**
@@ -28,12 +28,16 @@ public class Orders extends javax.swing.JPanel {
     public Orders() {
         initComponents();
         
+        //THIS USES THE WRONG API
+        /*
         orderApi = new CA_OnlineOrderAPI_Impl(
         new sa_orders.SA_ORD_API(DBConnection.getConnection()),
         new merchant.SA_Merchant_API_Impl(DBConnection.getConnection()), 
         new stock.CA_Stock_API_Impl(DBConnection.getConnection()),
         DBConnection.getConnection()
-);
+        );
+        */
+        
         saOrdApi = new SA_ORD_API(database.DBConnection.getConnection());
         loadOrders();
         loadCatalogue();
@@ -389,26 +393,31 @@ public class Orders extends javax.swing.JPanel {
     
     
     private void loadCatalogue() {
+        //THIS USES THE WRONG PRODUCT CATALOGUE, CALATOGUE NEEDS TO BE RETRIEVED FROM SA
+        /*
         try {
             javax.swing.table.DefaultTableModel model =
                 (javax.swing.table.DefaultTableModel) jCatalogueTable.getModel();
             model.setRowCount(0);
 
             
-            String[] catalogueItems = orderApi.getMerchantCatalogue(""); // empty string = get all
+            String[] catalogueItems = orderApi.getMerchantCatalogue(""); 
 
             for (String item : catalogueItems) {
-                String[] parts = item.split(" - ", 2); // splits "id - name"
+                String[] parts = item.split(" - ", 2); 
                 model.addRow(new Object[]{parts[0], parts[1]});
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
     
     
     private void searchCatalogue(String searchText) {
+        //THIS USES THE WRONG PRODUCT CATALOGUE, CALATOGUE NEEDS TO BE RETRIEVED FROM SA
+        /*
         try {
             javax.swing.table.DefaultTableModel model
                     = (javax.swing.table.DefaultTableModel) jCatalogueTable.getModel();
@@ -424,6 +433,9 @@ public class Orders extends javax.swing.JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        */
+        
 }
     
     

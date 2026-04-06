@@ -249,6 +249,7 @@ public class SA_ORD_API {
     
     
     public ResultSet getAllOrders() {
+        
     try {
         String query = "SELECT o.online_order_id, o.processed, i.product_id, i.quantity " +
                        "FROM ca_online_orders o " +
