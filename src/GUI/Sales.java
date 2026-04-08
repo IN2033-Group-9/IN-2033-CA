@@ -687,21 +687,21 @@ public class Sales extends javax.swing.JPanel {
         }
 
         // Temporary hook to pass sale item payload to backend until final DB write design is confirmed.
-        boolean recorded = merchantAPI.recordCustomerPurchase(
+        int saleId = merchantAPI.recordCustomerPurchase(
             getSelectedCustomerId(),
             buildSaleItemsForBackend(model),
             totalAmount,
             String.valueOf(jComboBox5.getSelectedItem())
         );
 
-        if (!recorded) {
+        if (saleId <= 0) {
             javax.swing.JOptionPane.showMessageDialog(this, "Sale could not be recorded.");
             return;
         }
 
         mirrorSaleInOrdersTable(model);
 
-        showRetailInvoice();
+        showRetailInvoice(saleId);
 
         model.setRowCount(0);
         jTextField1.setText("1");
@@ -790,7 +790,7 @@ public class Sales extends javax.swing.JPanel {
         return Integer.parseInt(digitsOnly);
     }
 
-    private void showRetailInvoice() {
+    private void showRetailInvoice(int saleId) {
         javax.swing.table.DefaultTableModel sourceModel =
             (javax.swing.table.DefaultTableModel) jTable1.getModel();
         javax.swing.table.DefaultTableModel invoiceModel = new javax.swing.table.DefaultTableModel(
@@ -825,10 +825,10 @@ public class Sales extends javax.swing.JPanel {
         tableScrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY));
         tableScrollPane.setPreferredSize(new java.awt.Dimension(460, 165));
 
-        javax.swing.JLabel titleLabel = new javax.swing.JLabel("9.7 Appendix 7: Retail Invoice");
+        javax.swing.JLabel titleLabel = new javax.swing.JLabel("Retail Invoice");
         titleLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 18));
 
-        javax.swing.JLabel briefLabel = new javax.swing.JLabel("InfoPharma ORDERING SYSTEM: STUDENT'S BRIEF");
+        javax.swing.JLabel briefLabel = new javax.swing.JLabel("");
         briefLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
 
         javax.swing.JTextArea leftAddress = createInvoiceTextArea(buildCustomerAddressBlock());
@@ -860,7 +860,7 @@ public class Sales extends javax.swing.JPanel {
         javax.swing.JPanel metaPanel = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, 8));
         metaPanel.setOpaque(false);
 
-        javax.swing.JLabel invoiceLabel = new javax.swing.JLabel("INVOICE NO.: 197362", javax.swing.SwingConstants.CENTER);
+        javax.swing.JLabel invoiceLabel = new javax.swing.JLabel("INVOICE NO.: " + saleId, javax.swing.SwingConstants.CENTER);
         invoiceLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 16));
 
         javax.swing.JLabel accountLabel = new javax.swing.JLabel(buildInvoiceAccountLine());

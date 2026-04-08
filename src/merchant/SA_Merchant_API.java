@@ -27,7 +27,7 @@ public interface SA_Merchant_API {
 
     boolean recordAccountPayment(int customerID, double amount);
 
-    boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, double totalAmount, String paymentMethod);
+    int recordCustomerPurchase(int customerID, List<Object[]> saleItems, double totalAmount, String paymentMethod);
 
     List<String> generateStatements();
 
