@@ -86,6 +86,7 @@ public class CA_OnlineOrderAPI_Impl implements CA_OnlineOrderAPI {
      */
     @Override
     public String[] getMerchantCatalogue(String searchTerm) {
+
         try {
             String sql = "SELECT product_id, product_name FROM ca_products WHERE LOWER(product_name) LIKE ?";
             PreparedStatement ps = conn.prepareStatement(sql);

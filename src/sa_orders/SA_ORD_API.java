@@ -9,12 +9,10 @@ import java.util.UUID;
 public class SA_ORD_API {
 
     private Connection conn;
-    private SA_Catalogue_API catalogueApi;
 
     // how to connect to the database and run queries will be in all classes to connect and change the database
     public SA_ORD_API(Connection conn) {
         this.conn = conn;
-        this.catalogueApi = new SA_Catalogue_API(conn);
     }
 
     private int getNextOnlineOrderItemId() throws SQLException {
@@ -256,13 +254,6 @@ public class SA_ORD_API {
     /**
      * Get catalogue
      */
-    public Map<Integer, String> getCatalogue() {
-        return catalogueApi.getCatalogue("");
-    }
-
-    public Map<Integer, String> searchCatalogue(String searchTerm) {
-        return catalogueApi.getCatalogue(searchTerm);
-    }
 
     
     
