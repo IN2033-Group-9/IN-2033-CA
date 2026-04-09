@@ -101,49 +101,78 @@ public class SA_Merchant_API_Impl implements SA_Merchant_API {
 
         return false;
     }
+       //Helper method: fetch sale_id from orderID
+
+    private int getSaleIdFromOrder(String orderID) throws SQLException {
+        if (isFrontendOrder(orderID)) {
+            // For frontend orders, parse numeric part of ONL-XXXX
+            try {
+                return Integer.parseInt(orderID.substring(4));
+            } catch (NumberFormatException e) {
+                throw new SQLException("Invalid frontend orderID format: " + orderID);
+            }
+        } else {
+            // For backend orders, look up ca_sales
+            String sql = "SELECT sale_id FROM ca_sales WHERE order_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, orderID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("sale_id");
+            } else {
+                throw new SQLException("No sale found for orderID: " + orderID);
+            }
+        }
+    }
+
     /**
-     * Pay by card payment in db
+     * Pay by card
      */
+    
     @Override
     public boolean processCardPayment(String orderID, String cardNumber, String expiry, double amount) {
-
         try {
-            // Online orders must exist in ca_online_orders. Frontend-generated ONL IDs are allowed.
+            // Validate order exists
             if (!isFrontendOrder(orderID) && !onlineOrderExists(orderID)) {
                 System.out.println("Payment failed: order not found");
                 return false;
             }
 
-            // Basic validation
-            if (cardNumber.length() < 8) {
-                System.out.println("Payment failed: invalid card");
+            // Basic card validation
+            if (cardNumber.length() < 8 || expiry == null || expiry.isEmpty()) {
+                System.out.println("Payment failed: invalid card details");
                 return false;
             }
 
-            // Frontend ONL payments are persisted after sale_id is created in recordCustomerPurchase.
-            if (isFrontendOrder(orderID)) {
-                return true;
+            // Send card info securely to PU subsystem
+            boolean puSuccess = puCommsApi.processCardPayment(cardNumber, expiry, amount, orderID);
+            if (!puSuccess) {
+                System.out.println("PU payment processing failed");
+                return false;
             }
 
-            // Insert payment record
-            String sql = "INSERT INTO ca_payments (payment_id, sale_id, payment_method, amount) VALUES (?, NULL, ?, ?)";
+            // Only record payment for backend or confirmed sale
+            try {
+                int saleId = getSaleIdFromOrder(orderID); // helper fetches sale_id for both frontend/backend
+                String sql = "INSERT INTO ca_payments (payment_id, sale_id, payment_method, amount) VALUES (?, ?, ?, ?)";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, (int)(Math.random() * 100000)); // TEMP payment_id
+                ps.setInt(2, saleId);
+                ps.setString(3, "CARD");
+                ps.setDouble(4, amount);
+                ps.executeUpdate();
 
-            PreparedStatement ps = conn.prepareStatement(sql);
+                System.out.println("Payment recorded successfully for order: " + orderID);
+            } catch (SQLException e) {
+                System.out.println("Sale not yet created for frontend ONL order, skipping DB insert for now");
+            }
 
-            ps.setInt(1, (int)(Math.random() * 100000)); // TEMP ID
-            ps.setString(2, "CARD");
-            ps.setDouble(3, amount);
-
-            ps.executeUpdate();
-
-            System.out.println("Payment successful for order: " + orderID);
             return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-
-        return false;
     }
 
     /**
