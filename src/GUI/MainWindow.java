@@ -8,6 +8,9 @@ import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import login.SA_LOGIN_API;
+
+
 /**
  *
  * @author mehzanazkhan
@@ -15,17 +18,24 @@ import javax.swing.ImageIcon;
 public class MainWindow extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainWindow.class.getName());
-    private String userRole;
+    //private String userRole;
+    private SA_LOGIN_API loginApi;
+    
 
     /**
      * Creates new form MainWindow
      */
-public MainWindow(String role) {
+public MainWindow() {
     initComponents();
-    this.userRole = role;
+    //this.userRole = role;
 
     contentPanel.setLayout(new java.awt.BorderLayout());
     contentPanel.add(new Dashboard(), java.awt.BorderLayout.CENTER);
+    
+    loginApi = new SA_LOGIN_API();
+    
+    
+    
 
         
         
@@ -274,7 +284,7 @@ public MainWindow(String role) {
     }//GEN-LAST:event_btnReportsActionPerformed
 
     private void btnCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomersActionPerformed
-                                       
+        String userRole = loginApi.getUserRole(loginApi.getCurrentLoggedInUsername());                               
         contentPanel.removeAll();
         contentPanel.add(new Customers(userRole), java.awt.BorderLayout.CENTER);
         contentPanel.revalidate();
@@ -282,10 +292,19 @@ public MainWindow(String role) {
     }//GEN-LAST:event_btnCustomersActionPerformed
 
     private void btnStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStaffActionPerformed
-        contentPanel.removeAll();
-        contentPanel.add(new ManageStaff(), java.awt.BorderLayout.CENTER);
-        contentPanel.revalidate();
-        contentPanel.repaint();
+        String userRole = loginApi.getUserRole(loginApi.getCurrentLoggedInUsername());
+        if (userRole == "Admin" || userRole == "Manager"){
+            contentPanel.removeAll();
+            contentPanel.add(new ManageStaff(), java.awt.BorderLayout.CENTER);
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+            "Access denied. Only managers and admin can access manage staff tab.");
+            return;
+        }
+        
+        
     }//GEN-LAST:event_btnStaffActionPerformed
 
     private void btnOnlineOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOnlineOrdersActionPerformed
@@ -298,7 +317,7 @@ public MainWindow(String role) {
     }//GEN-LAST:event_btnOnlineOrdersActionPerformed
 
     private void btnTemplatesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTemplatesActionPerformed
-    
+    String userRole = loginApi.getUserRole(loginApi.getCurrentLoggedInUsername());
     if (userRole == null || !userRole.equalsIgnoreCase("Manager")) {
         javax.swing.JOptionPane.showMessageDialog(this,
             "Access denied. Only managers can access templates.");

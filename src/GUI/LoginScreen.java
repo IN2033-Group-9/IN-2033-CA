@@ -196,7 +196,7 @@ public class LoginScreen extends javax.swing.JFrame {
         if (authenticated){
         //if (username.equals("Username") && password.equals("Password")){//temporary
             String role = cmbRole.getSelectedItem().toString();
-            new MainWindow(role).setVisible(true);
+            new MainWindow().setVisible(true);
             this.dispose();
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, "Invalid Login");
