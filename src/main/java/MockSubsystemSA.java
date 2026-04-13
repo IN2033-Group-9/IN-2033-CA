@@ -1,3 +1,5 @@
+package main.java;
+
 import io.javalin.Javalin;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +13,36 @@ import database.DBConnection;
 
 public class MockSubsystemSA {
 
+    private static volatile boolean started = false;
+
+    public static synchronized void startInBackground() {
+        if (started) {
+            return;
+        }
+
+        Thread apiThread = new Thread(() -> {
+            try {
+                startServer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, "sa-stock-api");
+        apiThread.setDaemon(true);
+        apiThread.start();
+    }
+
     public static void main(String[] args) {
+        try {
+            startServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static synchronized void startServer() {
+        if (started) {
+            return;
+        }
 
         final int port = Integer.parseInt(System.getenv().getOrDefault("SA_API_PORT", "8083"));
 
@@ -50,6 +81,9 @@ public class MockSubsystemSA {
         app.post("/api/stock/delivery", ctx -> {
             handleDelivery(ctx.bodyAsClass(Map.class), stockApi, ctx);
         });
+
+        started = true;
+        System.out.println("SA stock delivery API system started successfully on port " + port + ".");
     }
 
     private static void handleDelivery(Map<String, Object> body, CA_Stock_API_Impl stockApi, io.javalin.http.Context ctx) {

@@ -11,6 +11,7 @@ package GUI;
 
 import login.SA_LOGIN_API;
 import main.java.MockSubsystemCA;
+import main.java.MockSubsystemSA;
 
 public class LoginScreen extends javax.swing.JFrame {
     
@@ -200,6 +201,7 @@ public class LoginScreen extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         MockSubsystemCA.startInBackground();
+        MockSubsystemSA.startInBackground();
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
