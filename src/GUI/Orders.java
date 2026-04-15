@@ -18,6 +18,8 @@ import java.util.Map;
 import login.SA_LOGIN_API;
 import main.java.SA_COMMS_API_Impl;
 import sa_orders.SA_ORD_API;
+import java.sql.SQLException;
+import java.sql.Connection;
 
 
 public class Orders extends javax.swing.JPanel {
@@ -769,36 +771,73 @@ private String parseOrderStatusResponse(String jsonResponse) {
 }
 
 private void recordDeliveredOrderLocally(String orderId) {
+    Connection conn = null;
+
     try {
         System.out.println("recordDeliveredOrderLocally called for order: " + orderId);
 
-        String localStatus = saOrdApi.getLocalOrderStatus(orderId);
+        conn = database.DBConnection.getConnection();
+        conn.setAutoCommit(false);
+
+        sa_orders.SA_ORD_API localOrdApi = new sa_orders.SA_ORD_API(conn);
+        stock.CA_Stock_API_Impl stockApi = new stock.CA_Stock_API_Impl(conn);
+
+        String localStatus = localOrdApi.getLocalOrderStatus(orderId);
         System.out.println("Local status before update: " + localStatus);
 
         if ("delivered".equalsIgnoreCase(localStatus)) {
             System.out.println("Order already marked delivered locally, skipping.");
+            conn.rollback();
             return;
         }
 
-        stock.CA_Stock_API_Impl stockApi =
-            new stock.CA_Stock_API_Impl(database.DBConnection.getConnection());
-
-        Map<Integer, Integer> items = saOrdApi.getOrderItems(orderId);
+        Map<Integer, Integer> items = localOrdApi.getOrderItems(orderId);
         System.out.println("Items found for order: " + items);
+
+        if (items == null || items.isEmpty()) {
+            System.out.println("No local items found for order: " + orderId);
+            conn.rollback();
+            return;
+        }
 
         for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
             int productId = entry.getKey();
             int quantity = entry.getValue();
 
             System.out.println("Updating stock for product " + productId + " by " + quantity);
-            stockApi.recordDelivery(productId, quantity, null);
+
+            boolean stockUpdated = stockApi.recordDelivery(productId, quantity, null);
+            if (!stockUpdated) {
+                throw new SQLException("Failed to update stock for product " + productId);
+            }
         }
 
-        saOrdApi.updateOrderStatus(orderId, "delivered");
+        boolean statusUpdated = localOrdApi.updateOrderStatus(orderId, "delivered");
+        if (!statusUpdated) {
+            throw new SQLException("Failed to update local order status for " + orderId);
+        }
+
+        conn.commit();
         System.out.println("Delivery recorded locally for order: " + orderId);
 
     } catch (Exception e) {
+        try {
+            if (conn != null) {
+                conn.rollback();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         e.printStackTrace();
+
+    } finally {
+        try {
+            if (conn != null) {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 
