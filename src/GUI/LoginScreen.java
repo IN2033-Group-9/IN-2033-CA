@@ -85,10 +85,10 @@ public class LoginScreen extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(153, 204, 255));
 
         jPasswordField.setFont(new java.awt.Font("Menlo", 0, 18)); // NOI18N
-        jPasswordField.setText("Test123");
+        jPasswordField.setText("Get_it_done");
 
         jUsernameField.setFont(new java.awt.Font("Menlo", 0, 18)); // NOI18N
-        jUsernameField.setText("TestUser");
+        jUsernameField.setText("manager");
         jUsernameField.addActionListener(this::jUsernameFieldActionPerformed);
 
         signIn.setBackground(new java.awt.Color(153, 204, 255));
