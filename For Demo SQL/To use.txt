@@ -1,0 +1,6 @@
+Run the build sql file first
+then run the add sql
+
+will need mysql lite installed as well as python 3.6 or higher
+
+I recommend using pycharm to run the code
