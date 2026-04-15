@@ -548,9 +548,9 @@ private void loadLoggedInBalance() {
         System.out.println("Selected row: " + selectedRow);
         System.out.println("Order ID from table (column 0): [" + orderId + "]");
         System.out.println("Order ID length: " + orderId.length());
-        System.out.println("Order ID type/format: appears to be " + 
+        System.out.println("Order ID type/format: appears to be " +
             (orderId.matches("\\d{5}-\\d{2}-\\d{2}") ? "NUMERIC (like 22026-04-12)" : "OTHER"));
-        
+
         String response = saCommsApi.getInvoice("orderId=" + orderId);
         System.out.println("SA invoice response for " + orderId + ": " + response);
 
@@ -559,8 +559,6 @@ private void loadLoggedInBalance() {
             return;
         }
 
-        // If the response appears to be an SA error message instead of invoice text,
-        // fallback to a locally generated invoice view.
         if (response.toLowerCase().contains("couldnt")
             || response.toLowerCase().contains("couldn't")
             || response.toLowerCase().contains("could not")
@@ -568,14 +566,17 @@ private void loadLoggedInBalance() {
             showInvoiceFallback(orderId, response);
             return;
         }
-        javax.swing.JTextArea area = new javax.swing.JTextArea(response);
+
+        String formattedInvoice = formatInvoiceResponse(response);
+
+        javax.swing.JTextArea area = new javax.swing.JTextArea(formattedInvoice);
         area.setEditable(false);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
         area.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 13));
 
         javax.swing.JScrollPane pane = new javax.swing.JScrollPane(area);
-        pane.setPreferredSize(new java.awt.Dimension(500, 300));
+        pane.setPreferredSize(new java.awt.Dimension(520, 340));
 
         javax.swing.JOptionPane.showMessageDialog(
             this,
@@ -840,6 +841,72 @@ private void recordDeliveredOrderLocally(String orderId) {
         }
     }
 }
+
+private String formatInvoiceResponse(String jsonResponse) {
+    try {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(jsonResponse);
+
+        StringBuilder invoice = new StringBuilder();
+
+        invoice.append("INVOICE\n");
+        invoice.append("========================================\n");
+        invoice.append("Invoice ID: ").append(extractString(root, "invoice_id")).append("\n");
+        invoice.append("Order Date: ").append(extractString(root, "order_date")).append("\n");
+        invoice.append("Client: ").append(extractString(root, "client")).append("\n");
+        invoice.append("Address: ").append(extractString(root, "address")).append("\n");
+        invoice.append("Postcode: ").append(extractString(root, "postcode")).append("\n");
+        invoice.append("Phone: ").append(extractString(root, "phone")).append("\n");
+        invoice.append("Email: ").append(extractString(root, "email")).append("\n");
+        invoice.append("Company Reg No: ").append(extractString(root, "company_reg_num")).append("\n");
+        invoice.append("\n");
+
+        double totalWithoutDiscount = root.has("total_without_discount") ? root.get("total_without_discount").asDouble() : 0.0;
+        double totalWithDiscount = root.has("total_with_discount") ? root.get("total_with_discount").asDouble() : 0.0;
+        double amountStillDue = root.has("amount_still_due") ? root.get("amount_still_due").asDouble() : 0.0;
+
+        invoice.append("Items\n");
+        invoice.append("----------------------------------------\n");
+
+        JsonNode items = root.get("items");
+        JsonNode quantities = root.get("quantity");
+        JsonNode itemCosts = root.get("items_cost");
+        JsonNode units = root.get("units");
+        JsonNode prices = root.get("prices");
+
+        if (items != null && items.isArray() && quantities != null && quantities.isArray()) {
+            for (int i = 0; i < items.size(); i++) {
+                String itemName = items.get(i).asText();
+                int qty = i < quantities.size() ? quantities.get(i).asInt() : 0;
+                int unitCount = (units != null && i < units.size()) ? units.get(i).asInt() : 0;
+                double unitPrice = (prices != null && i < prices.size()) ? prices.get(i).asDouble() : 0.0;
+                double lineCost = (itemCosts != null && i < itemCosts.size()) ? itemCosts.get(i).asDouble() : 0.0;
+
+                invoice.append(itemName).append("\n");
+                invoice.append("  Quantity ordered: ").append(qty).append("\n");
+                invoice.append("  Units per pack: ").append(unitCount).append("\n");
+                invoice.append("  Price per item: £").append(String.format("%.2f", unitPrice)).append("\n");
+                invoice.append("  Line total: £").append(String.format("%.2f", lineCost)).append("\n\n");
+            }
+        } else {
+            invoice.append("No item details available.\n\n");
+        }
+
+        invoice.append("========================================\n");
+        invoice.append("Total before discount: £").append(String.format("%.2f", totalWithoutDiscount)).append("\n");
+        invoice.append("Total after discount:  £").append(String.format("%.2f", totalWithDiscount)).append("\n");
+        invoice.append("Amount still due:      £").append(String.format("%.2f", amountStillDue)).append("\n");
+
+        return invoice.toString();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return jsonResponse;
+    }
+}
+
+
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
