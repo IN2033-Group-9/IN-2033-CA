@@ -196,6 +196,20 @@ public class SA_ORD_API {
         }
     }
 
+    public boolean insertOrder(String orderID, boolean processed) {
+        try {
+            String sql = "INSERT INTO ca_online_orders (online_order_id, received_at, processed) VALUES (?, CURRENT_TIMESTAMP, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, orderID);
+            ps.setBoolean(2, processed);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * View order (readable)
      */

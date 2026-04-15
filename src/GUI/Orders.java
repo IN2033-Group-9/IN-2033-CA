@@ -405,6 +405,10 @@ public class Orders extends javax.swing.JPanel {
     public void refreshOrders() {
         loadOrders();
     }
+
+    public void refreshBalance() {
+        loadLoggedInBalance();
+    }
     
     
     
