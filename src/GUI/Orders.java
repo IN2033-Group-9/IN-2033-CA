@@ -617,6 +617,46 @@ private Map<Integer, String> parseCatalogueResponse(String jsonResponse) {
     return result;
 }
 
+private void showInvoiceFallback(String orderId, String failureReason) {
+    Map<String, Integer> orderItems = saOrdApi.viewOrder(orderId);
+    StringBuilder invoice = new StringBuilder();
+
+    invoice.append("SA invoice not available for order: ").append(orderId).append("\n");
+    invoice.append("Failure reason: ").append(failureReason).append("\n\n");
+    invoice.append("Local order details below:\n");
+    invoice.append("---------------------------\n");
+
+    if (orderItems.isEmpty()) {
+        invoice.append("No local order items found for this order.\n");
+    } else {
+        invoice.append(String.format("%-40s %10s\n", "Product", "Quantity"));
+        invoice.append("------------------------------------------------\n");
+        for (Map.Entry<String, Integer> item : orderItems.entrySet()) {
+            invoice.append(String.format("%-40s %10d\n", item.getKey(), item.getValue()));
+        }
+    }
+
+    invoice.append("\n");
+    invoice.append("Note: This is a local order summary because SA invoice details could not be retrieved.\n");
+    invoice.append("If some products are missing or quantities differ, please verify the order in SA and retry.\n");
+
+    javax.swing.JTextArea area = new javax.swing.JTextArea(invoice.toString());
+    area.setEditable(false);
+    area.setLineWrap(true);
+    area.setWrapStyleWord(true);
+    area.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 13));
+
+    javax.swing.JScrollPane pane = new javax.swing.JScrollPane(area);
+    pane.setPreferredSize(new java.awt.Dimension(500, 320));
+
+    javax.swing.JOptionPane.showMessageDialog(
+        this,
+        pane,
+        "Order Summary - Invoice Unavailable",
+        javax.swing.JOptionPane.INFORMATION_MESSAGE
+    );
+}
+
 private int extractInt(JsonNode node, String... keys) {
     for (String key : keys) {
         if (node.has(key) && !node.get(key).isNull()) {
