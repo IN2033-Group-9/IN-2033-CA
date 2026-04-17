@@ -21,7 +21,7 @@ import sa_orders.SA_ORD_API;
 import java.sql.SQLException;
 import java.sql.Connection;
 
-
+//Initialises orders panel.
 public class Orders extends javax.swing.JPanel {
 
     private static int orderCounter = 1;
@@ -35,6 +35,7 @@ public class Orders extends javax.swing.JPanel {
 public Orders() {
     initComponents();
 
+    //Creating API objects for the APIs needed
     saOrdApi = new SA_ORD_API(database.DBConnection.getConnection());
     saCommsApi = new SA_COMMS_API_Impl();
     loginApi = new SA_LOGIN_API();
@@ -43,6 +44,7 @@ public Orders() {
     initialiseMerchantSelector();
     loginSelectedMerchantAndRefresh();
 
+    //Key listener which allows the user to search for products in the catalogue
     jCatalogueSearchBar.addKeyListener(new java.awt.event.KeyAdapter() {
         public void keyReleased(java.awt.event.KeyEvent evt) {
             searchCatalogue(jCatalogueSearchBar.getText());
@@ -367,30 +369,36 @@ public Orders() {
     }// </editor-fold>//GEN-END:initComponents
 
 
+    //Method including a call to a backend method to retrieve all orders made to SA.
     private void loadOrders() {
         try {
             javax.swing.table.DefaultTableModel model =
                 (javax.swing.table.DefaultTableModel) jOrdersTable.getModel();
 
-            model.setRowCount(0);
-
+            model.setRowCount(0); //table is emptied, no rows.
+            
+            //Backend method call to retireve all orders made to SA which are stored in the database.
             java.sql.ResultSet rs = saOrdApi.getAllOrders();
 
+            //If no orders are retrieved then the system does nothing/nothing is displayed.
             if (rs == null) return;
 
+            //For each order, retrieve and display the information in the table in Orders panel.
             while (rs.next()) {
                 String orderId = rs.getString("order_ref");
-                String status = rs.getString("status");
-                int productId = rs.getInt("product_id");
-                int quantity = rs.getInt("quantity");
-                java.sql.Timestamp orderTimestamp = rs.getTimestamp("order_date");
+                String status = rs.getString("status"); //retrieves status of order
+                int productId = rs.getInt("product_id"); //retrieves product id in order
+                int quantity = rs.getInt("quantity"); //retrieves quantity
+                java.sql.Timestamp orderTimestamp = rs.getTimestamp("order_date"); //retieves date
 
                 String date = orderTimestamp == null
                     ? "-"
-                    : new java.text.SimpleDateFormat("dd/MM/yyyy").format(orderTimestamp);
+                    : new java.text.SimpleDateFormat("dd/MM/yyyy").format(orderTimestamp); //retrieves date in correct format.
+                
+                
+                double totalCost = rs.getDouble("total_cost"); //retrieves total cost
 
-                double totalCost = rs.getDouble("total_cost");
-
+                //Displays information from the order specified by the order ID in rows.
                 model.addRow(new Object[]{
                     orderId,
                     date,
@@ -406,56 +414,65 @@ public Orders() {
         }
     }
 
-public void refreshOrders() {
-    loadOrders();
-    refreshStatusesFromSA();
-}
-
+    //Changes made to the orders are updated on the GUI, new orders, and status changes.
+    public void refreshOrders() {
+        loadOrders();
+        refreshStatusesFromSA();
+    }
+    
+    //Changes made to the balance, like when an transactio is completed, it will display.
     public void refreshBalance() {
         loadLoggedInBalance();
     }
     
     
-    
+//Method including a call to a backend method to retrieve all orders made to SA.
 private void loadCatalogue() {
     try {
         javax.swing.table.DefaultTableModel model =
             (javax.swing.table.DefaultTableModel) jCatalogueTable.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0); //table is emptied, no rows.
 
+        //Retrieves catalogue from SA Comms API based on merchant
+        String jsonResponse = saCommsApi.getActiveCatalogue("username=" + selectedMerchantUsername);
+        System.out.println("RAW catalogue response: " + jsonResponse);
 
-String jsonResponse = saCommsApi.getActiveCatalogue("username=" + selectedMerchantUsername);
-System.out.println("RAW catalogue response: " + jsonResponse);
-
-if (jsonResponse == null || jsonResponse.isBlank()) {
-    javax.swing.JOptionPane.showMessageDialog(this,
-        "No catalogue data returned from SA.");
-    return;
-}
-
-Map<Integer, String> catalogueItems = parseCatalogueResponse(jsonResponse);
-System.out.println("Parsed catalogue size: " + catalogueItems.size());
-
-        for (Map.Entry<Integer, String> item : catalogueItems.entrySet()) {
-            model.addRow(new Object[]{item.getKey(), item.getValue()});
+        //Code that handles if the catalogue wasn't retrieved from SA, displays messge to user
+        if (jsonResponse == null || jsonResponse.isBlank()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "No catalogue data returned from SA.");
+            return;
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Failed to load SA catalogue: " + e.getMessage());
+        
+        Map<Integer, String> catalogueItems = parseCatalogueResponse(jsonResponse);
+        System.out.println("Parsed catalogue size: " + catalogueItems.size());
+
+        //For each catalogue item mapping a new row is added including the product and it's information
+            for (Map.Entry<Integer, String> item : catalogueItems.entrySet()) {
+                model.addRow(new Object[]{item.getKey(), item.getValue()});
+            }
+
+            //Exception handling for if the above code causes an error and catalogue isn't retrieved, message displayed to user
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Failed to load SA catalogue: " + e.getMessage());
+        }
     }
-}
     
     
+//Allows user to search catalogue by product name
 private void searchCatalogue(String searchText) {
     try {
         javax.swing.table.DefaultTableModel model =
             (javax.swing.table.DefaultTableModel) jCatalogueTable.getModel();
         model.setRowCount(0);
 
+        //Retrieves catalogue from SA Comms API based on merchant
         String jsonResponse = saCommsApi.getActiveCatalogue("username=" + selectedMerchantUsername);
 
+        //Code that handles if the catalogue wasn't retrieved from SA, system does nothing
         if (jsonResponse == null || jsonResponse.isBlank()) {
             return;
         }
@@ -464,74 +481,73 @@ private void searchCatalogue(String searchText) {
 
         String search = searchText == null ? "" : searchText.trim().toLowerCase();
 
+        //For each catalogue item mapping a new row is added including the product and it's information
         for (Map.Entry<Integer, String> item : catalogueItems.entrySet()) {
             String productName = item.getValue() == null ? "" : item.getValue().toLowerCase();
 
+            //product row is displayed depending on if what the user typed matches a products name.
             if (search.isBlank() || productName.contains(search)) {
                 model.addRow(new Object[]{item.getKey(), item.getValue()});
             }
         }
 
+        //If there is an error in the above code this exception handles it
     } catch (Exception e) {
         e.printStackTrace();
     }
 }
 
-    //code for balance
+    //code for loading the balance depending on the merchant
 private void loadLoggedInBalance() {
     try {
         
+        //Calls backend method from SA COMMS API to retrieve the balance based on the merchant
         String response = saCommsApi.getBalance("username=" + selectedMerchantUsername);
         System.out.println("SA balance response: " + response);
 
+        //If no balance is retrieved then the displayed balance is £0.00
         if (response == null || response.isBlank()) {
             jLabel3.setText("£0.00");
             return;
         }
 
         double balance = Double.parseDouble(response.trim());
-        jLabel3.setText(String.format("£%.2f", balance));
+        jLabel3.setText(String.format("£%.2f", balance)); //ensures the balanc eis displayed int he correct format
 
+        //If there is an issue with the above code (with retrieving the balance) then displayed balance is £0.00yu8i
     } catch (Exception e) {
         jLabel3.setText("£0.00");
         e.printStackTrace();
     }
 }
     
-    
-    
-    public static String generateOrderID(){
-        return String.format("ORD%05d", orderCounter++);
-    }
-    
-    
-    
+
+    //Adds a row to the order table
     public void addOrderRow(Object[] row){
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jOrdersTable.getModel();
         model.addRow(row);
     }
-    
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-
-
-    }                                        
+                                         
 
     private void jCatalogueSearchBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCatalogueSearchBarActionPerformed
         String text = jCatalogueSearchBar.getText();
         searchCatalogue(text);
     }//GEN-LAST:event_jCatalogueSearchBarActionPerformed
 
+    
+//This button is for viewing the order invoice
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
     int selectedRow = jOrdersTable.getSelectedRow();
 
+    //A row from the orders table must be selected to view it's invoice
     if (selectedRow == -1) {
         javax.swing.JOptionPane.showMessageDialog(this,
             "Please select an order to view the invoice of.");
         return;
     }
 
-    String orderId = jOrdersTable.getValueAt(selectedRow, 0).toString();
+    String orderId = jOrdersTable.getValueAt(selectedRow, 0).toString(); //retrieves order id
 
     try {
         System.out.println("=== INVOICE REQUEST DEBUG ===");
@@ -541,9 +557,11 @@ private void loadLoggedInBalance() {
         System.out.println("Order ID type/format: appears to be " +
             (orderId.matches("\\d{5}-\\d{2}-\\d{2}") ? "NUMERIC (like 22026-04-12)" : "OTHER"));
 
+        //Calls backend method from SA COMMS API to retrieve the Invoice based on the order ID.
         String response = saCommsApi.getInvoice("orderId=" + orderId);
         System.out.println("SA invoice response for " + orderId + ": " + response);
 
+        //If no invoice data is retrieved then a message is displayed
         if (response == null || response.isBlank()) {
             showInvoiceFallback(orderId, "No invoice data returned from SA.");
             return;
@@ -557,6 +575,7 @@ private void loadLoggedInBalance() {
             return;
         }
 
+        //The following block of code displays the invoice.
         String formattedInvoice = formatInvoiceResponse(response);
 
         javax.swing.JTextArea area = new javax.swing.JTextArea(formattedInvoice);
@@ -575,6 +594,7 @@ private void loadLoggedInBalance() {
             javax.swing.JOptionPane.INFORMATION_MESSAGE
         );
 
+        //if there is an error in the above code to retrieve and display the invoice then a message is displayed.
     } catch (Exception e) {
         e.printStackTrace();
         javax.swing.JOptionPane.showMessageDialog(this,
@@ -583,11 +603,15 @@ private void loadLoggedInBalance() {
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    //This is the button for placing an order.
     private void btnPlaceOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlaceOrderActionPerformed
     System.out.println("btnPlaceOrder clicked, AccStatus = '" + AccStatus.getText() + "'");
+    
+    //Order can only be placed if the account status is normal.
     if (AccStatus.getText().equals("Normal")){
         java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
 
+        //Displays a dialog pane/window to add items to the created order and to submit it.
         NewOrder dialog;
         if (parentWindow instanceof java.awt.Frame) {
             dialog = new NewOrder((java.awt.Frame) parentWindow, true, this);
@@ -601,6 +625,7 @@ private void loadLoggedInBalance() {
         // Reload from DB after modal closes so newly submitted orders are shown.
         refreshOrders();
     } else {
+        //If account status is not normal, a message is shown that the user cannot place an order.
         javax.swing.JOptionPane.showMessageDialog(this,
                 "Account status must be normal to place an order.");
     
@@ -611,11 +636,13 @@ private void loadLoggedInBalance() {
     }//GEN-LAST:event_btnPlaceOrderActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-            if (saCommsApi != null) {
-        loginSelectedMerchantAndRefresh();
-    }    
+        //If via the combo box a merchant is selected then system logs in with the specified merchant
+        if (saCommsApi != null) {
+            loginSelectedMerchantAndRefresh();
+        }    
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+//Converts a JSON catalogue response into an ordered map of product IDs to their corresponding descriptions
 private Map<Integer, String> parseCatalogueResponse(String jsonResponse) {
     Map<Integer, String> result = new LinkedHashMap<>();
 
@@ -637,6 +664,7 @@ private Map<Integer, String> parseCatalogueResponse(String jsonResponse) {
             }
         }
 
+        //If the above code as an error then it is handles with the bellow code
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -644,6 +672,7 @@ private Map<Integer, String> parseCatalogueResponse(String jsonResponse) {
     return result;
 }
 
+//Displays alternative if Invoice cannot be retrieved from SA
 private void showInvoiceFallback(String orderId, String failureReason) {
     Map<String, Integer> orderItems = saOrdApi.viewOrder(orderId);
     StringBuilder invoice = new StringBuilder();
@@ -684,6 +713,7 @@ private void showInvoiceFallback(String orderId, String failureReason) {
     );
 }
 
+//Returns/converts key as an integer
 private int extractInt(JsonNode node, String... keys) {
     for (String key : keys) {
         if (node.has(key) && !node.get(key).isNull()) {
@@ -696,6 +726,7 @@ private int extractInt(JsonNode node, String... keys) {
     return 0;
 }
 
+//Returns/converts key as an string
 private String extractString(JsonNode node, String... keys) {
     for (String key : keys) {
         if (node.has(key) && !node.get(key).isNull()) {
@@ -708,6 +739,7 @@ private String extractString(JsonNode node, String... keys) {
     return "";
 }
 
+//Status of orders are retrieved from SA to ensure they are updated.
 private void refreshStatusesFromSA() {
     try {
         javax.swing.table.DefaultTableModel model =
@@ -745,6 +777,7 @@ private void refreshStatusesFromSA() {
             }
         }
 
+        //If above code causes an error, it is handled below
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -752,12 +785,13 @@ private void refreshStatusesFromSA() {
 
 
 
-
+//Parses a JSON response to extract and return the orderStatus value as a string, 
 private String parseOrderStatusResponse(String jsonResponse) {
     try {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(jsonResponse);
 
+        //Returns an empty string if it’s missing or an error occurs.
         if (root.has("orderStatus") && !root.get("orderStatus").isNull()) {
             return root.get("orderStatus").asText();
         }
@@ -768,48 +802,63 @@ private String parseOrderStatusResponse(String jsonResponse) {
 }
 
 private void recordDeliveredOrderLocally(String orderId) {
+    
+    //A connection (to DB) is initialised
     Connection conn = null;
 
     try {
         System.out.println("recordDeliveredOrderLocally called for order: " + orderId);
 
+        //Retrieve database connection
         conn = database.DBConnection.getConnection();
         conn.setAutoCommit(false);
 
+        //Initialises order and stock APIs
         sa_orders.SA_ORD_API localOrdApi = new sa_orders.SA_ORD_API(conn);
         stock.CA_Stock_API_Impl stockApi = new stock.CA_Stock_API_Impl(conn);
 
+        //Retrieves current status of order
         String localStatus = localOrdApi.getLocalOrderStatus(orderId);
         System.out.println("Local status before update: " + localStatus);
 
+        //If already delivered, system does nothing.
         if ("delivered".equalsIgnoreCase(localStatus)) {
             System.out.println("Order already marked delivered locally, skipping.");
             conn.rollback();
             return;
         }
 
+        //Items in the order are all retrieved
         Map<Integer, Integer> items = localOrdApi.getOrderItems(orderId);
         System.out.println("Items found for order: " + items);
 
+        //If there are no items in the order then system does nothing
         if (items == null || items.isEmpty()) {
             System.out.println("No local items found for order: " + orderId);
             conn.rollback();
             return;
         }
 
+        //Update stock for each product/item
         for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
             int productId = entry.getKey();
             int quantity = entry.getValue();
 
             System.out.println("Updating stock for product " + productId + " by " + quantity);
 
+            //Stock updated according to delivery
             boolean stockUpdated = stockApi.recordDelivery(productId, quantity, null);
+            
+            //If the stock is not updated then stock update has failed
             if (!stockUpdated) {
                 throw new SQLException("Failed to update stock for product " + productId);
             }
         }
 
+        //Order status updated to delivered
         boolean statusUpdated = localOrdApi.updateOrderStatus(orderId, "delivered");
+        
+        //If the order status is not updated then status update has failed
         if (!statusUpdated) {
             throw new SQLException("Failed to update local order status for " + orderId);
         }
@@ -817,6 +866,7 @@ private void recordDeliveredOrderLocally(String orderId) {
         conn.commit();
         System.out.println("Delivery recorded locally for order: " + orderId);
 
+        //If transaction fails then this is handled
     } catch (Exception e) {
         try {
             if (conn != null) {
@@ -838,6 +888,7 @@ private void recordDeliveredOrderLocally(String orderId) {
     }
 }
 
+//Formats the invoice/insure that it is displayed properly
 private String formatInvoiceResponse(String jsonResponse) {
     try {
         ObjectMapper mapper = new ObjectMapper();
@@ -895,12 +946,14 @@ private String formatInvoiceResponse(String jsonResponse) {
 
         return invoice.toString();
 
+        //Handles errors in the code above
     } catch (Exception e) {
         e.printStackTrace();
         return jsonResponse;
     }
 }
 
+//Combobox used to select the merchant is initialised/options are added
 private void initialiseMerchantSelector() {
     jComboBox1.removeAllItems();
     jComboBox1.addItem("Cosymed Ltd");
@@ -910,7 +963,7 @@ private void initialiseMerchantSelector() {
     jComboBox1.setSelectedItem("Cosymed Ltd");
 }
 
-
+//Merchant logged in based on the users selection on the combobox
 private void loginSelectedMerchantAndRefresh() {
     try {
         String selected = String.valueOf(jComboBox1.getSelectedItem());
@@ -926,6 +979,7 @@ private void loginSelectedMerchantAndRefresh() {
             selectedMerchantPassword = "bondstreet";
         }
 
+        //Retrieves loggin details on the merchant logged in
         boolean loggedIn = saCommsApi.login(selectedMerchantUsername, selectedMerchantPassword);
         System.out.println("SA login result for " + selectedMerchantUsername + ": " + loggedIn);
 
@@ -935,11 +989,13 @@ private void loginSelectedMerchantAndRefresh() {
             return;
         }
 
+        //loads in orders, statuses from SA, catalogue and the balance of logged in user
         loadOrders();
         refreshStatusesFromSA();
         loadCatalogue();
         loadLoggedInBalance();
 
+        //If above code causes an error this is handled below
     } catch (Exception e) {
         e.printStackTrace();
         javax.swing.JOptionPane.showMessageDialog(this,
