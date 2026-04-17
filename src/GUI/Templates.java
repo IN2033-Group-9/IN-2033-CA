@@ -132,6 +132,7 @@ public Templates() {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    // Saves the edited reminder or invoice template back to storage.
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
     String key = (String) jComboBox2.getSelectedItem();
@@ -160,11 +161,13 @@ public Templates() {
 }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // Loads the selected template content into the editor.
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         loadSelectedTemplate();
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
 
+// Loads the available template keys into the dropdown.
 private void loadTemplateKeys() {
     try {
         jComboBox2.removeAllItems();
@@ -184,6 +187,7 @@ private void loadTemplateKeys() {
     }
 }
 
+// Loads the currently selected template text into the editor area.
 private void loadSelectedTemplate() {
     try {
         String key = (String) jComboBox2.getSelectedItem();
