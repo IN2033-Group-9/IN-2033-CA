@@ -27,6 +27,7 @@ public class Reports extends javax.swing.JPanel {
     
     private final SA_Merchant_API merchantAPI = new SA_Merchant_API_Impl(DBConnection.getConnection());
 
+    // Formats report totals for display in the UI.
     private String formatCurrency(double value) {
     return String.format("£%.2f", value);
 }
@@ -273,10 +274,12 @@ public Reports() {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    // Opens the printable report preview dialog from the reports page.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         showReportPreviewDialog();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+// Builds the report preview with the latest sales rows and action buttons.
 private void showReportPreviewDialog() {
     javax.swing.JDialog dialog = new javax.swing.JDialog(
         (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this),
@@ -348,6 +351,7 @@ private void showReportPreviewDialog() {
     }
 
 
+// Builds the summary text shown at the top of the report preview.
 private String buildReportSummary() {
     try {
         double totalSales = merchantAPI.getTotalSales();
@@ -363,6 +367,7 @@ private String buildReportSummary() {
     }
 }
     
+    // Loads the report totals and top-selling products into the page widgets.
     private void loadReportData() {
     try {
         double totalSales = merchantAPI.getTotalSales();
@@ -393,6 +398,7 @@ private String buildReportSummary() {
     }
  }
     
+// Exports the current report table to a CSV file selected by the user.
 private void exportTableToCSV(javax.swing.JTable table) {
     javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
     fileChooser.setDialogTitle("Save Report");
@@ -445,6 +451,7 @@ private void exportTableToCSV(javax.swing.JTable table) {
     }
 }
 
+// Sends the current report table to the printer and shows the result.
 private void printTable(javax.swing.JTable table) {
     try {
         boolean printed = table.print(
