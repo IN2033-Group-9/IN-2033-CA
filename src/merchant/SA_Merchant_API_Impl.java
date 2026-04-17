@@ -27,10 +27,12 @@ public class SA_Merchant_API_Impl implements SA_Merchant_API {
         this.puCommsApi = puCommsApi != null ? puCommsApi : new PU_COMMS_API_Impl();
     }
 
+    // Treat frontend-generated ONL IDs as valid temporary sale references.
     private boolean isFrontendOrder(String orderID) {
         return orderID != null && orderID.startsWith("ONL-");
     }
 
+    // Checks whether a persisted online order already exists in the database.
     private boolean onlineOrderExists(String orderID) throws SQLException {
         String check = "SELECT online_order_id FROM ca_online_orders WHERE online_order_id = ?";
         PreparedStatement psCheck = conn.prepareStatement(check);
@@ -39,6 +41,7 @@ public class SA_Merchant_API_Impl implements SA_Merchant_API {
         return rs.next();
     }
 
+    // Returns the next numeric ID for tables that do not auto-generate keys.
     private int getNextId(String tableName, String idColumn) throws SQLException {
         String sql = "SELECT COALESCE(MAX(" + idColumn + "), 0) + 1 AS next_id FROM " + tableName;
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -108,7 +111,6 @@ public class SA_Merchant_API_Impl implements SA_Merchant_API {
         return false;
     }
        //Helper method: fetch sale_id from orderID
-
     private int getSaleIdFromOrder(String orderID) throws SQLException {
         if (isFrontendOrder(orderID)) {
             // For frontend orders, parse numeric part of ONL-XXXX
@@ -753,8 +755,10 @@ public boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, 
 
     try {
         previousAutoCommit = conn.getAutoCommit();
+        // Keep the sale header, payment row, and sale items in one transaction.
         conn.setAutoCommit(false);
 
+        // Create the main sale record first so later rows can link back to it.
         int saleId = getNextId("ca_sales", "sale_id");
         String saleSql = "INSERT INTO ca_sales (sale_id, customer_id, total_amount, payment_deferred, sale_source) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement salePs = conn.prepareStatement(saleSql);
@@ -771,6 +775,7 @@ public boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, 
         salePs.setString(5, "IN_STORE");
         salePs.executeUpdate();
 
+        // Card and cash sales get a payment row immediately; account sales stay deferred.
         String normalizedMethod = paymentMethod == null ? "UNKNOWN" : paymentMethod.trim().toUpperCase();
         if ("CASH".equals(normalizedMethod) || "CARD".equals(normalizedMethod)) {
             String paymentSql = "INSERT INTO ca_payments (payment_id, customer_id, sale_id, payment_method, amount) VALUES (?, ?, ?, ?, ?)";
@@ -789,6 +794,7 @@ public boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, 
             payPs.executeUpdate();
         }
 
+        // Prepare the line-item inserts that describe what was actually sold.
         int nextSaleItemId = getNextId("ca_sale_items", "sale_item_id");
         String itemSql = "INSERT INTO ca_sale_items (sale_item_id, sale_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement itemPs = conn.prepareStatement(itemSql);
@@ -796,6 +802,7 @@ public boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, 
         int insertedItems = 0;
 
         for (Object[] item : saleItems) {
+            // Ignore malformed entries so only valid sale rows reach the database.
             if (item == null || item.length < 3 || !(item[0] instanceof Number)
                     || !(item[1] instanceof Number) || !(item[2] instanceof Number)) {
                 continue;
@@ -815,11 +822,13 @@ public boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, 
         }
 
         if (insertedItems == 0) {
+            // Abort the whole transaction if no valid sale items were queued.
             conn.rollback();
             System.out.println("Sale recording failed: no valid items supplied");
             return false;
         }
 
+        // Commit only after the sale header and all sale items have been saved together.
         itemPs.executeBatch();
         conn.commit();
         System.out.println("Sale recorded successfully. Sale ID: " + saleId + ", items: " + insertedItems);
@@ -827,6 +836,7 @@ public boolean recordCustomerPurchase(int customerID, List<Object[]> saleItems, 
 
     } catch (SQLException e) {
         try {
+            // Roll back partial writes if any part of the sale flow fails.
             conn.rollback();
         } catch (SQLException rollbackEx) {
             rollbackEx.printStackTrace();

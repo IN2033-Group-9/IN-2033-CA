@@ -37,11 +37,16 @@ public class Sales extends javax.swing.JPanel {
     private String cardSummary = "";
     private String cardNumberForBackend = "";
     private String cardExpiryForBackend = "";
+    // Handles payment processing and sale persistence for completed purchases.
     private final SA_Merchant_API merchantAPI = new SA_Merchant_API_Impl(DBConnection.getConnection());
+    // Creates and submits mirrored orders into the orders subsystem.
     private final SA_ORD_API saOrdApi = new SA_ORD_API(DBConnection.getConnection());
+    // Loads invoice and pharmacy text fragments from shared templates.
     private final TemplateAPI templateAPI = new TemplateAPI_Impl();
+    // Sends confirmation emails after a sale has been completed.
     private final PU_COMMS_API_Impl puCommsApi = new PU_COMMS_API_Impl();
     
+    // Loads current stock data so the sales page can build its product list.
     private final CA_Stock_API_Impl stockApi = new CA_Stock_API_Impl(DBConnection.getConnection());
 
     /**
@@ -471,47 +476,58 @@ public class Sales extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    // Handles product dropdown changes for the sale form.
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    // Handles quantity field actions when the user confirms input.
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    // Adds the selected product and quantity to the current sale.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         addSelectedItemToSale();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // Handles changes in the unused secondary product selector.
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox3ActionPerformed
 
+    // Handles actions in the unused secondary quantity field.
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
+    // Handles clicks on the unused secondary add button.
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    // Updates account field visibility and totals when the customer type changes.
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         updateAccountIdVisibility();
         updateSummary();
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
+    // Applies any extra UI flow needed for the selected payment method.
     private void jComboBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox5ActionPerformed
         handlePaymentMethodSelection();
     }//GEN-LAST:event_jComboBox5ActionPerformed
 
+    // Handles account ID field actions for account holder sales.
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
+    // Finalises the sale and triggers payment, order, and invoice steps.
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         completeSale();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // Wraps the page content in a scroll pane so the full form remains accessible.
     private void makeContentScrollable() {
         removeAll();
         setLayout(new java.awt.BorderLayout());
@@ -571,12 +587,14 @@ public class Sales extends javax.swing.JPanel {
     }*/
     
     
+    // Loads stock data and resets the sales form to its default state.
     private void initialiseSalesPage() {
         // Load products from database
         productCatalog.clear();
         jComboBox1.removeAllItems();
         
         try {
+            // Pull the latest sellable items from the stock backend.
             List<Object[]> allStockItems = stockApi.getAllStockItems();
             for (Object[] item : allStockItems) {
                 productCatalog.add(item);
@@ -661,6 +679,7 @@ public class Sales extends javax.swing.JPanel {
    
 //do omsthing
     
+    // Validates the current selection and adds the item into the sale table.
     private void addSelectedItemToSale() {
         int selectedIndex = jComboBox1.getSelectedIndex();
         if (selectedIndex < 0) {
@@ -716,6 +735,7 @@ public class Sales extends javax.swing.JPanel {
     }
      
 
+    // Finds an existing row for the same product so quantities can be merged.
     private int findRowByProductId(javax.swing.table.DefaultTableModel model, String productId) {
         for (int row = 0; row < model.getRowCount(); row++) {
             if (productId.equals(String.valueOf(model.getValueAt(row, 0)))) {
@@ -725,6 +745,7 @@ public class Sales extends javax.swing.JPanel {
         return -1;
     }
 
+    // Recalculates subtotal, discount, VAT, and total from the sale table.
     private void updateSummary() {
         javax.swing.table.DefaultTableModel model =
             (javax.swing.table.DefaultTableModel) jTable1.getModel();
@@ -749,6 +770,7 @@ public class Sales extends javax.swing.JPanel {
         }
     }
 
+    // Applies the account holder discount when that customer type is selected.
     private double calculateDiscount(double subtotal) {
         if ("Account Holder".equals(String.valueOf(jComboBox2.getSelectedItem()))) {
             return subtotal * ACCOUNT_HOLDER_DISCOUNT_RATE;
@@ -756,6 +778,7 @@ public class Sales extends javax.swing.JPanel {
         return 0.0;
     }
 
+    // Validates the sale, processes payment, records the order, and resets the form.
     private void completeSale() {
         javax.swing.table.DefaultTableModel model =
             (javax.swing.table.DefaultTableModel) jTable1.getModel();
@@ -777,14 +800,14 @@ public class Sales extends javax.swing.JPanel {
         }
 
         double totalAmount = parseCurrency(jLabel22.getText());
-        // Block sale completion unless payment step succeeds.
+        // Stop here if the payment backend rejects the transaction.
         boolean paymentOk = callPaymentBackend(totalAmount);
         if (!paymentOk) {
             javax.swing.JOptionPane.showMessageDialog(this, "Payment failed. Sale was not completed.");
             return;
         }
 
-        // Temporary hook to pass sale item payload to backend until final DB write design is confirmed.
+        // Persist the sale against the merchant backend once payment has cleared.
         boolean recorded = merchantAPI.recordCustomerPurchase(
             getSelectedCustomerId(),
             buildSaleItemsForBackend(model),
@@ -797,11 +820,13 @@ public class Sales extends javax.swing.JPanel {
             return;
         }
 
+        // Mirror the completed sale into the order subsystem for fulfilment tracking.
         mirrorSaleInOrdersTable(model);
 
         String customerEmail = javax.swing.JOptionPane.showInputDialog(this, "Enter customer email for order confirmation:");
         System.out.println("Customer email entered: " + customerEmail);
         if (customerEmail != null && !customerEmail.isBlank()) {
+            // Send a confirmation email after the sale has been stored successfully.
             boolean sent = puCommsApi.sendEmail(
                 customerEmail,
                 "Order Confirmation",
@@ -824,6 +849,7 @@ public class Sales extends javax.swing.JPanel {
         updateSummary();
     }
 
+    // Sends the current basket to the orders backend as a submitted order.
     private void mirrorSaleInOrdersTable(javax.swing.table.DefaultTableModel model) {
         int rowCount = model.getRowCount();
         if (rowCount == 0) {
@@ -838,24 +864,29 @@ public class Sales extends javax.swing.JPanel {
             quantities[i] = Integer.parseInt(String.valueOf(model.getValueAt(i, 2)));
         }
 
+        // Build, populate, and submit the mirrored order in the backend flow.
         String orderId = saOrdApi.newOrder();
         saOrdApi.addItems(orderId, itemIDs, quantities);
         saOrdApi.submitOrder(orderId);
     }
 
+    // Routes the payment request to the correct backend method for the chosen type.
     private boolean callPaymentBackend(double totalAmount) {
         String paymentMethod = String.valueOf(jComboBox5.getSelectedItem());
         String posOrderId = generateFrontendOrderId();
 
         if ("Card".equalsIgnoreCase(paymentMethod)) {
+            // Card payments use the generated POS order ID plus captured card details.
             return merchantAPI.processCardPayment(posOrderId, cardNumberForBackend, cardExpiryForBackend, totalAmount);
         }
 
         if ("Cash".equalsIgnoreCase(paymentMethod)) {
+            // Cash payments only need the frontend order reference and total.
             return merchantAPI.processCashPayment(posOrderId, totalAmount);
         }
 
         if ("Account".equalsIgnoreCase(paymentMethod) || "Credit".equalsIgnoreCase(paymentMethod)) {
+            // Credit flows are charged against the selected customer account.
             return merchantAPI.processCreditPayment(getSelectedCustomerId(), totalAmount);
         }
 
@@ -863,12 +894,14 @@ public class Sales extends javax.swing.JPanel {
         return false;
     }
 
+    // Builds a unique order ID for frontend payment requests.
     private String generateFrontendOrderId() {
         return "ONL-" + java.time.LocalDateTime.now()
             .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
             + "-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
+    // Converts table rows into the item structure expected by the backend.
     private List<Object[]> buildSaleItemsForBackend(javax.swing.table.DefaultTableModel model) {
         List<Object[]> saleItems = new ArrayList<>();
 
@@ -877,12 +910,14 @@ public class Sales extends javax.swing.JPanel {
             int quantity = Integer.parseInt(String.valueOf(model.getValueAt(row, 2)));
             double unitPrice = parseCurrency(String.valueOf(model.getValueAt(row, 3)));
 
+            // Each backend item entry is stored as product ID, quantity, then unit price.
             saleItems.add(new Object[] {productId, quantity, unitPrice});
         }
 
         return saleItems;
     }
 
+    // Returns the selected account ID or zero for non-account customers.
     private int getSelectedCustomerId() {
         if (!"Account Holder".equals(String.valueOf(jComboBox2.getSelectedItem()))) {
             return 0;
@@ -891,6 +926,7 @@ public class Sales extends javax.swing.JPanel {
         return parseIdNumber(jTextField2.getText().trim());
     }
 
+    // Extracts the numeric portion from IDs stored as mixed text.
     private int parseIdNumber(String value) {
         String digitsOnly = value.replaceAll("\\D+", "");
         if (digitsOnly.isEmpty()) {
@@ -899,6 +935,7 @@ public class Sales extends javax.swing.JPanel {
         return Integer.parseInt(digitsOnly);
     }
 
+    // Builds and displays the retail invoice dialog for the completed sale.
     private void showRetailInvoice() {
         javax.swing.table.DefaultTableModel sourceModel =
             (javax.swing.table.DefaultTableModel) jTable1.getModel();
@@ -1016,6 +1053,7 @@ public class Sales extends javax.swing.JPanel {
         );
     }
 
+    // Creates a read-only text area styled for invoice content blocks.
     private javax.swing.JTextArea createInvoiceTextArea(String text) {
         javax.swing.JTextArea textArea = new javax.swing.JTextArea(text);
         textArea.setEditable(false);
@@ -1027,6 +1065,7 @@ public class Sales extends javax.swing.JPanel {
         return textArea;
     }
 
+    // Builds the customer address block shown on the invoice.
     private String buildCustomerAddressBlock() {
         String customerName = "Occasional Customer".equals(String.valueOf(jComboBox2.getSelectedItem()))
             ? "Walk-in Customer"
@@ -1040,22 +1079,26 @@ public class Sales extends javax.swing.JPanel {
             + "Account No: " + accountId;
     }
 
+    // Formats the current date for the invoice header.
     private String buildInvoiceDateBlock() {
         String invoiceDate = java.time.LocalDate.now()
             .format(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy"));
         return invoiceDate;
     }
 
+    // Builds the account number line shown in the invoice metadata.
     private String buildInvoiceAccountLine() {
         String accountId = jTextField2.getText().trim().isEmpty() ? "CSM000123" : jTextField2.getText().trim();
         return "Account No: " + accountId;
     }
     
+    // Builds the invoice footer using templates, with a fallback message if needed.
     private String buildInvoiceFooterBlock() {
     String paymentMethod = String.valueOf(jComboBox5.getSelectedItem());
     String paymentDetails = cardSummary.isEmpty() ? paymentMethod : paymentMethod + " (" + cardSummary + ")";
 
     try {
+        // Reuse shared template text so invoice wording stays consistent across screens.
         String footerTemplate = templateAPI.getTemplate("invoice_footer");
         String pharmacyName = templateAPI.getTemplate("pharmacy_name");
 
@@ -1072,6 +1115,7 @@ public class Sales extends javax.swing.JPanel {
 
 
 
+    // Creates the totals table shown at the bottom of the invoice.
     private javax.swing.JPanel buildTotalsPanel() {
         javax.swing.JPanel totalsPanel = new javax.swing.JPanel(new java.awt.GridLayout(4, 2, 0, 0));
         totalsPanel.setOpaque(false);
@@ -1096,6 +1140,7 @@ public class Sales extends javax.swing.JPanel {
         return wrapper;
     }
 
+    // Creates one styled cell for the invoice totals panel.
     private javax.swing.JLabel createTotalsCell(String text, boolean leftAligned) {
         javax.swing.JLabel label = new javax.swing.JLabel(text);
         label.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 13));
@@ -1111,10 +1156,12 @@ public class Sales extends javax.swing.JPanel {
         return label;
     }
 
+    // Removes currency symbols so label values can be reused as plain text.
     private String stripCurrency(String value) {
         return value.replace("£", "").replace("Â£", "").replace("Ã‚Â£", "").trim();
     }
 
+    // Shows the account ID field only when the customer is an account holder.
     private void updateAccountIdVisibility() {
         boolean isAccountHolder = "Account Holder".equals(String.valueOf(jComboBox2.getSelectedItem()));
         jLabel11.setVisible(isAccountHolder);
@@ -1126,6 +1173,7 @@ public class Sales extends javax.swing.JPanel {
         repaint();
     }
 
+    // Opens card capture when needed and clears stored card details otherwise.
     private void handlePaymentMethodSelection() {
         if ("Card".equals(String.valueOf(jComboBox5.getSelectedItem()))) {
             if (!captureCardDetails()) {
@@ -1137,6 +1185,7 @@ public class Sales extends javax.swing.JPanel {
         }
     }
 
+    // Collects and validates card details before card payment is processed.
     private boolean captureCardDetails() {
         javax.swing.JTextField cardholderField = new javax.swing.JTextField();
         javax.swing.JTextField cardNumberField = new javax.swing.JTextField();
@@ -1182,16 +1231,20 @@ public class Sales extends javax.swing.JPanel {
         return true;
     }
 
+    // Formats numeric values as pound currency for the UI.
     private String formatCurrency(double value) {
         return String.format("£%.2f", value);
     }
 
+    // Parses a displayed currency string back into a numeric value.
     private double parseCurrency(String value) {
         return Double.parseDouble(value.replace("£", "").trim());
     }
     
+    // Builds the pharmacy contact block used on the invoice.
     private String buildPharmacyBlock() {
     try {
+        // Pull the pharmacy contact details from the shared template backend.
         String name = templateAPI.getTemplate("pharmacy_name");
         String address = templateAPI.getTemplate("pharmacy_address");
         String email = templateAPI.getTemplate("pharmacy_email");

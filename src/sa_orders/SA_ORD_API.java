@@ -17,6 +17,7 @@ public class SA_ORD_API {
         this.catalogueApi = new SA_Catalogue_API(conn);
     }
 
+    // Returns the next item ID for rows inserted into ca_online_order_items.
     private int getNextOnlineOrderItemId() throws SQLException {
         String sql = "SELECT COALESCE(MAX(online_order_item_id), 0) + 1 AS next_id FROM ca_online_order_items";
         PreparedStatement ps = conn.prepareStatement(sql);
