@@ -26,6 +26,8 @@ public class Stock extends javax.swing.JPanel {
     private CA_Stock_API_Impl stockApi;
     private Connection conn;
     
+    // Sets up the stock page, database connection, and table state
+    // before loading the current stock data and alerts.
     public Stock() {
     initComponents();
     
@@ -267,6 +269,8 @@ public class Stock extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    // Adds the live search behaviour for filtering stock rows
+    // by product ID or product name as the user types.
     private void setupSearchFilter() {
     jTextField1.getDocument().addDocumentListener(new DocumentListener() {
         private void filter() {
@@ -298,6 +302,8 @@ public class Stock extends javax.swing.JPanel {
     
     
     
+    // Opens the add item form, validates the input,
+    // and creates a new stock record when the form is confirmed.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
     javax.swing.JTextField txtProductId = new javax.swing.JTextField();
@@ -383,6 +389,8 @@ public class Stock extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // Removes the selected stock item after confirmation,
+    // then refreshes the table and low stock alert panel.
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     int selectedRow = jTable1.getSelectedRow();
 
@@ -417,6 +425,8 @@ public class Stock extends javax.swing.JPanel {
     }
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    // Updates the quantity for the selected product
+    // and refreshes the stock data shown on screen.
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
     int selectedRow = jTable1.getSelectedRow();
 
@@ -458,6 +468,8 @@ public class Stock extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // Records a delivery for the selected product
+    // by increasing its stock quantity in the backend.
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     int selectedRow = jTable1.getSelectedRow();
 
@@ -497,6 +509,8 @@ public class Stock extends javax.swing.JPanel {
     }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+// Pulls the latest low stock items from the backend
+// and formats them for the alert panel.
 private void updateLowStockAlertFromBackend() {
     if (stockApi == null) {
         txtLowStock.setText("Unable to load low stock alerts.");
@@ -519,6 +533,8 @@ private void updateLowStockAlertFromBackend() {
     }
 }
 
+// Reloads the stock table rows from the backend
+// so the page reflects the latest product data.
 private void loadStockTable() {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
     model.setRowCount(0);

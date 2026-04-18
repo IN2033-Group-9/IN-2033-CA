@@ -35,6 +35,8 @@ public class ManageStaff extends javax.swing.JPanel {
     /**
      * Creates new form ManageStaff
      */
+    // Sets up the staff management page, attaches search behaviour,
+    // and loads the current staff accounts into the table.
     public ManageStaff() {
         initComponents();
         
@@ -216,6 +218,8 @@ public class ManageStaff extends javax.swing.JPanel {
         CustomerJpanel2.getAccessibleContext().setAccessibleName("Manage staff accounts");
     }// </editor-fold>//GEN-END:initComponents
 
+// Reloads all staff accounts from the backend
+// so the table reflects the latest user data.
 private void loadUsersTable() {
     try {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -237,6 +241,8 @@ private void loadUsersTable() {
     }
 }
 
+// Filters the staff table using the entered search text
+// to keep matching usernames or roles visible.
 private void filterUsers() {
     try {
         String searchText = jTextField1.getText().trim().toLowerCase();
@@ -266,10 +272,14 @@ private void filterUsers() {
 }
     
     
+    // Runs a staff search when the search field is submitted
+    // so the table updates to the current filter text.
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         filterUsers();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    // Opens the add staff form, validates the input,
+    // and creates a new staff account when confirmed.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         javax.swing.JTextField txtUsername = new javax.swing.JTextField();
@@ -324,6 +334,8 @@ private void filterUsers() {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // Removes the selected staff account after confirmation
+    // and refreshes the table when the deletion succeeds.
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int selectedRow = jTable1.getSelectedRow();
 
@@ -358,6 +370,8 @@ private void filterUsers() {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // Updates the role for the selected staff member
+    // and reloads the table after the change.
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int selectedRow = jTable1.getSelectedRow();
 

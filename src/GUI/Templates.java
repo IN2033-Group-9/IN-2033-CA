@@ -19,6 +19,8 @@ private final TemplateAPI templateAPI = new TemplateAPI_Impl();
     /**
      * Creates new form Templates
      */
+// Sets up the templates page and loads the available template keys
+// so the editor starts with a selectable template.
 public Templates() {
     initComponents();
     loadTemplateKeys();

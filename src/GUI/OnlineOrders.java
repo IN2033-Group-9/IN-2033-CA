@@ -13,6 +13,8 @@ public class OnlineOrders extends javax.swing.JPanel {
     /**
      * Creates new form OnlineOrders
      */
+    // Sets up the online orders page and loads sample order rows
+    // into the table for display.
     public OnlineOrders() {
         initComponents();
         
@@ -131,6 +133,8 @@ public class OnlineOrders extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    // Updates the status of the selected online order
+    // using the status chosen in the dialog.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
             int selectedRow = jTable1.getSelectedRow();
 
@@ -166,6 +170,8 @@ public class OnlineOrders extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // Shows the full details for the selected online order
+    // in a simple dialog box.
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
             int selectedRow = jTable1.getSelectedRow();
 
@@ -197,6 +203,8 @@ public class OnlineOrders extends javax.swing.JPanel {
         javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // Filters the online orders table using the entered search text
+    // so matching orders remain visible.
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
             String searchText = jTextField1.getText().toLowerCase();
 

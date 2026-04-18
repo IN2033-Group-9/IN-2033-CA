@@ -37,6 +37,8 @@ public class Customers extends javax.swing.JPanel {
     /**
      * Creates new form Customers
      */
+// Sets up the customers page, connects supporting APIs,
+// and loads the current customer data into the table.
 public Customers() {
     initComponents();
     
@@ -69,6 +71,8 @@ try {
 
 
 
+// Sets up the customers page for the supplied role,
+// then loads and normalises the customer account data.
 public Customers(String role) {
     initComponents();
     
@@ -101,30 +105,44 @@ public Customers(String role) {
     loadCustomersTable();
 }
      
+    // Checks whether the current user can add new customer accounts
+    // from the customers management page.
     private boolean canAddCustomer() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
 
+    // Checks whether the current user can remove customer accounts
+    // from the customers management page.
     private boolean canRemoveCustomer() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
 
+    // Checks whether the current user can change customer credit limits
+    // from the customers management page.
     private boolean canUpdateCreditLimit() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
 
+    // Checks whether the current user can reactivate suspended accounts
+    // from the customers management page.
     private boolean canReactivateAccount() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
 
+    // Checks whether the current user can create or edit discount plans
+    // from the customers management page.
     private boolean canManageDiscountPlans() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
 
+    // Checks whether the current user can record account payments
+    // from the customers management page.
     private boolean canRecordPayment() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
 
+    // Checks whether the current user can generate payment reminders
+    // from the customers management page.
     private boolean canGenerateReminders() {
         return loginApi.isAdminOrManagerRole(loginApi.getCurrentLoggedInUsername());
     }
@@ -347,6 +365,8 @@ public Customers(String role) {
          filterCustomers();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    // Opens the add customer form, validates the entered details,
+    // and creates a new customer account when the form is confirmed.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     if (!canAddCustomer()) {
         JOptionPane.showMessageDialog(this,
@@ -488,6 +508,8 @@ public Customers(String role) {
     }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // Removes the selected customer account after confirmation,
+    // then refreshes the table to show the latest data.
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (!canRemoveCustomer()) {
             JOptionPane.showMessageDialog(this,
@@ -527,6 +549,8 @@ public Customers(String role) {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    // Updates the credit limit for the selected customer
+    // and reloads the table after the change is applied.
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     if (!canUpdateCreditLimit()) {
         JOptionPane.showMessageDialog(this,
@@ -585,6 +609,8 @@ public Customers(String role) {
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    // Reactivates a selected customer account that is in default
+    // and refreshes the table once the status changes.
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
             if (!canReactivateAccount()) {
         JOptionPane.showMessageDialog(this,
@@ -639,6 +665,8 @@ public Customers(String role) {
     }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    // Assigns a new discount plan to the selected customer
+    // using the chosen plan type and discount value.
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
     if (!canManageDiscountPlans()) {
         JOptionPane.showMessageDialog(this,
@@ -714,6 +742,8 @@ public Customers(String role) {
 
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    // Records a payment against the selected customer account
+    // and updates statuses before reloading the table.
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
             if (!canRecordPayment()) {
         JOptionPane.showMessageDialog(this,
@@ -774,6 +804,8 @@ try {
 }
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    // Updates the selected customer's existing discount plan
+    // with a new plan type or discount value.
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         if (!canManageDiscountPlans()) {
             JOptionPane.showMessageDialog(this,
@@ -848,6 +880,8 @@ try {
     }
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    // Deletes the discount plan for the selected customer
+    // after the user confirms the action.
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
             if (!canManageDiscountPlans()) {
         JOptionPane.showMessageDialog(this,
@@ -889,6 +923,8 @@ try {
     }
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    // Generates reminder data for the selected customer
+    // and shows the correct reminder letter for their status.
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
     if (!canGenerateReminders()) {
         JOptionPane.showMessageDialog(this,
@@ -926,6 +962,8 @@ try {
 
     }//GEN-LAST:event_jButton9ActionPerformed
 
+// Loads a reminder template, fills in the account details,
+// and shows the finished reminder letter in a dialog.
 private void showReminderLetter(String templateKey, String customerName, String accountId, String balance) {
     try {
         String template = templateAPI.getTemplate(templateKey);
@@ -966,6 +1004,8 @@ private void showReminderLetter(String templateKey, String customerName, String 
     }
 }
 
+    // Reloads all customer rows from the backend
+    // so the table reflects the latest account data.
     private void loadCustomersTable() {
     try {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -992,6 +1032,8 @@ private void showReminderLetter(String templateKey, String customerName, String 
     }
 }
     
+// Filters the customer table using the current search text
+// and keeps matching rows for account, name, or email.
 private void filterCustomers() {
     try {
         String searchText = jTextField1.getText().trim().toLowerCase();

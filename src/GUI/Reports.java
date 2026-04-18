@@ -35,6 +35,8 @@ public class Reports extends javax.swing.JPanel {
     /**
      * Creates new form Reports
      */
+// Sets up the reports page and loads the latest report totals
+// and product data into the visible widgets.
 public Reports() {
     initComponents();
     loadReportData();
