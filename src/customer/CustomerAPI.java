@@ -9,6 +9,7 @@ import java.util.List;
 /**
  *
  * @author laraashour
+ * Contact points for the frontend to interact with customer data, implemented in CustomerAPI_Impl
  */
 
 public interface CustomerAPI {

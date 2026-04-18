@@ -55,6 +55,7 @@ public class SA_Catalogue_API {
         return catalogue;
     }
 
+    // Reads catalogue items from SA REST API, parsing product_id and product_name using regex.
     private void readViaRest(Map<Integer, String> catalogue, String searchTerm) throws IOException, InterruptedException {
         String encoded = URLEncoder.encode(searchTerm, StandardCharsets.UTF_8);
         String url = saBaseUrl + "/api/ipos_sa/sa_ord_api/getActiveCatalogue?search=" + encoded;
@@ -70,12 +71,14 @@ public class SA_Catalogue_API {
             throw new IOException("SA catalogue REST call failed with status " + response.statusCode());
         }
 
+        // Response body is expected to contain items with product_id and product_name fields. We use regex to extract these.
         parseCatalogueItems(response.body(), catalogue);
         if (catalogue.isEmpty()) {
             throw new IOException("SA catalogue response did not contain parseable items");
         }
     }
 
+    // Fallback method to read catalogue items directly from the database if REST call fails. Uses SQL LIKE for search.
     private void readViaFallbackQuery(Map<Integer, String> catalogue, String searchTerm) throws SQLException {
         String sql = "SELECT product_id, product_name FROM ca_products WHERE LOWER(product_name) LIKE ? ORDER BY product_name";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -89,6 +92,7 @@ public class SA_Catalogue_API {
         }
     }
 
+    // Parses the REST API response body to extract product_id and product_name pairs using regex, handling escaped characters.
     private void parseCatalogueItems(String body, Map<Integer, String> catalogue) {
         Matcher matcher = ITEM_PATTERN.matcher(body);
         while (matcher.find()) {

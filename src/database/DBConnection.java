@@ -12,6 +12,7 @@ public class DBConnection {
 
     private static final String JDBC_PREFIX = "jdbc:sqlite:";
 
+    // Attempts several differnt paths to find the database file
     private static Path resolveDatabasePath() {
         Path[] candidates = new Path[] {
             Paths.get("CA_db.db"),
@@ -28,6 +29,7 @@ public class DBConnection {
         return null;
     }
 
+    // Establishes a connection to the SQLite database
     public static Connection getConnection() {
         Path dbPath = resolveDatabasePath();
 

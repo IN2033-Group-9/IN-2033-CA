@@ -11,6 +11,7 @@ package templates;
 import java.util.List;
 import java.util.Map;
 
+// defines contact points for front end
 public interface TemplateAPI {
     String getTemplate(String key) throws Exception;
     boolean updateTemplate(String key, String value) throws Exception;

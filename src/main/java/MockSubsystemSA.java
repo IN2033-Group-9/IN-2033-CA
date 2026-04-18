@@ -40,7 +40,7 @@ public class MockSubsystemSA {
         apiThread.start();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //allows starting the server directly
         try {
             startServer();
             System.out.println("SA communication client ready.");
@@ -49,6 +49,7 @@ public class MockSubsystemSA {
         }
     }
 
+    // Starts the HTTP server and initializes the HTTP client
     private static synchronized void startServer() {
         if (started) {
             return;
@@ -62,7 +63,8 @@ public class MockSubsystemSA {
         System.out.println("SA stock delivery API client initialised for " + BASE_URL + ".");
     }
 
-    public static String login(String username, String password) {
+    // API methods to interact with SA REST endpoints, returning raw response bodies or error messages.
+    public static String login(String username, String password) { //logs in to SA and returns the raw response body or an error message if login fails
         try {
             ensureStarted();
 
@@ -85,6 +87,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //creates a new supplier order in SA for the given username, returns the orderId or an error message if creation fails
     public static String createSupplierOrder(String username) {
         try {
             ensureStarted();
@@ -110,6 +113,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //adds items to an existing supplier order in SA, returns the raw response body or an error message if the operation fails
     public static String addItems(String orderId, List<Integer> itemIds, List<BigDecimal> quantities) {
         try {
             ensureStarted();
@@ -141,6 +145,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //remove items from an existing supplier order in SA, returns the raw response body or an error message if the operation fails
     public static String removeItems(String orderId, List<Integer> itemIds, List<BigDecimal> quantities) {
         try {
             ensureStarted();
@@ -172,6 +177,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //submits the supplier order in SA, returns the raw response body or an error message if submission fails
     public static String submitSupplierOrder(String orderId) {
         try {
             ensureStarted();
@@ -198,6 +204,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //reads order statuses for a given orderId from SA, returns the raw response body or an error message if the operation fails
     public static String readOrderStatuses(String orderId) {
         try {
             ensureStarted();
@@ -220,6 +227,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //reads invoices for a given orderId or invoiceId from SA, returns the raw response body or an error message if the operation fails
     public static String readInvoices(String orderId, String invoiceId) {
         try {
             ensureStarted();
@@ -254,6 +262,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //reads the supplier balance for a given username from SA, returns the raw response body or an error message if the operation fails
     public static String readSupplierBalance(String username) {
         try {
             ensureStarted();
@@ -276,6 +285,7 @@ public class MockSubsystemSA {
         }
     }
 
+    //reads the active catalogue from SA, returns the raw response body or an error message if the operation fails
 public static String readActiveCatalogue() {
     try {
         ensureStarted();
@@ -319,6 +329,7 @@ public static String readActiveCatalogue() {
         }
     }
 
+    
     private static String encode(String value) {
         return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8);
     }

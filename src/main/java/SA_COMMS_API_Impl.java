@@ -127,10 +127,12 @@ static {
         return getRaw("/sa_ord_api/getActiveCatalogue", queryString, "getActiveCatalogue");
     }
 
-    private boolean postOrderItems(String path, String operation, String orderId, int[] itemId, BigDecimal[] quantity) {
+    
+    private boolean postOrderItems(String path, String operation, String orderId, int[] itemId, BigDecimal[] quantity) {//overloaded method with default quantity field name
         return postOrderItems(path, operation, orderId, itemId, quantity, "quantity");
     }
 
+    //generalized method for posting order item changes to SA, used by both addItems and removeItems, with customizable quantity field name for flexibility
     private boolean postOrderItems(String path, String operation, String orderId, int[] itemId, BigDecimal[] quantity, String quantityFieldName) {
         try {
             if (orderId == null || orderId.isBlank() || itemId == null || quantity == null || itemId.length != quantity.length) {
@@ -155,6 +157,7 @@ static {
     
 
 
+    //generalized method for GET requests to SA API with optional query string, used by multiple operations, returns raw response body or null on failure
 private String getRaw(String path, String queryString, String operation) {
     
     String endpoint = buildUrl(path + normalizeQuery(queryString));
@@ -182,6 +185,7 @@ private String getRaw(String path, String queryString, String operation) {
     }
 }
 
+//generalized method for sending HTTP requests to SA API, used by all operations, with error handling and logging
     private HttpResult send(String method, String endpointUrl, String payload) throws Exception {
         URL url = new URL(endpointUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -205,6 +209,7 @@ private String getRaw(String path, String queryString, String operation) {
         return new HttpResult(responseCode, responseBody);
     }
 
+    //reads the response body from the connection, handling both success and error streams, returns the response as a string
     private String readResponseBody(HttpURLConnection conn, int responseCode) throws Exception {
         InputStream stream = responseCode >= 400 ? conn.getErrorStream() : conn.getInputStream();
         if (stream == null) {
@@ -239,6 +244,7 @@ private String getRaw(String path, String queryString, String operation) {
             + "}";
     }
 
+    //constructs the full URL for the SA API endpoint
     private String buildUrl(String path) {
         String normalizedPath = path == null ? "" : path.trim();
         if (!normalizedPath.startsWith("/")) {
@@ -247,6 +253,7 @@ private String getRaw(String path, String queryString, String operation) {
         return saApiBase + normalizedPath;
     }
 
+    //normalizes the base URL by trimming whitespace and removing trailing slashes
     private String normalizeBase(String base) {
         String value = Objects.requireNonNullElse(base, DEFAULT_SA_API_BASE).trim();
         if (value.isEmpty()) {
@@ -258,6 +265,7 @@ private String getRaw(String path, String queryString, String operation) {
         return value;
     }
 
+    //normalizes the query string by ensuring it starts with a '?' if it's not empty, and trimming whitespace
     private String normalizeQuery(String queryString) {
         if (queryString == null || queryString.isBlank()) {
             return "";
@@ -282,6 +290,7 @@ private String getRaw(String path, String queryString, String operation) {
             .replace("\n", "\\n");
     }
 
+   //centralized logging for HTTP failures during SA API calls
     private void logHttpFailure(String operation, String endpointUrl, HttpResult result) {
         System.out.println("SA API " + operation + " failed with HTTP " + result.responseCode + " at " + endpointUrl);
         if (!result.responseBody.isBlank()) {
@@ -292,7 +301,9 @@ private String getRaw(String path, String queryString, String operation) {
     private HttpResult doGet(String endpoint) throws Exception {
     return send("GET", endpoint, null);
 }
-    
+
+
+    //centralized logging for exceptions during SA API calls
 private void logException(String operation, String endpoint, Exception e) {
     System.out.println("ERROR in " + operation + " -> " + endpoint);
     e.printStackTrace();
@@ -311,7 +322,7 @@ private void logException(String operation, String endpoint, Exception e) {
             return responseCode >= 200 && responseCode < 300;
         }
     }
-    
+    //method to perform login via SA API, returns true if login is successful (HTTP 200), false otherwise
     public boolean login(String username, String password) {
     try {
         String endpoint = buildUrl("/sa_login_api/login");

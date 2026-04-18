@@ -3,6 +3,7 @@ package merchant;
 import java.sql.SQLException;
 import java.util.List;
 
+// defines contact points for the frontend to interact with the merchant system, implemented by SA_Merchant_API_Impl
 public interface SA_Merchant_API { 
 
     double getCustomerBalance(int customerID); 

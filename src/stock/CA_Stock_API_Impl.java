@@ -1,11 +1,14 @@
 package stock;
 
-import main.java.PU_COMMS_API;
-import main.java.PU_COMMS_API_Impl;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import main.java.PU_COMMS_API;
+import main.java.PU_COMMS_API_Impl;
 
 public class CA_Stock_API_Impl {
 
@@ -44,6 +47,7 @@ public class CA_Stock_API_Impl {
     }
 
 
+    // This method is used by the frontend to add a new product along with its initial stock level in a single operation.
     public boolean addNewProductWithStock(int productId, String productName, double price,
                                           double vatRate, String productType, String description,
                                           int quantity, int lowStockThreshold) {
@@ -52,6 +56,7 @@ public class CA_Stock_API_Impl {
         try {
             conn.setAutoCommit(false);
 
+            // First insert into ca_products
             String productSql = "INSERT INTO ca_products (product_id, product_name, price, vat_rate, product_type, description) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement psProduct = conn.prepareStatement(productSql);
             psProduct.setInt(1, productId);
@@ -62,6 +67,7 @@ public class CA_Stock_API_Impl {
             psProduct.setString(6, description);
             psProduct.executeUpdate();
 
+            // Then insert into ca_stock
             String stockSql = "INSERT INTO ca_stock (product_id, quantity, low_stock_threshold) VALUES (?, ?, ?)";
             PreparedStatement psStock = conn.prepareStatement(stockSql);
             psStock.setInt(1, productId);
@@ -140,6 +146,7 @@ public class CA_Stock_API_Impl {
     }
 
 
+    // This method is used by the frontend to check if a product exists before allowing stock operations on it.
     public boolean productExists(int productId) {
         if (conn == null) return false;
 
@@ -193,6 +200,7 @@ public class CA_Stock_API_Impl {
 
 
 
+    // This method is used by the frontend to display all stock items along with their details and current stock levels.
     public List<Object[]> getAllStockItems() {
         List<Object[]> items = new ArrayList<>();
 
@@ -225,7 +233,7 @@ public class CA_Stock_API_Impl {
         return items;
     }
 
-
+//used to record deliveries from SA, increasing dtock levels equally
 public boolean recordDelivery(int productId, int quantity) {
     return recordDelivery(productId, quantity, null);
 }

@@ -176,6 +176,10 @@ public class PU_COMMS_API_Impl implements PU_COMMS_API {
         }
     }
 
+    /**
+     * Example of a method to process card payments via PU API.
+     * This is a stub and not fully implemented
+     */
     public boolean processCardPayment(String cardNumber, String expiry, double amount, String orderID) {
         try {
             // Creating JSON payload

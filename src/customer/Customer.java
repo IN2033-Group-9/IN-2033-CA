@@ -7,6 +7,8 @@ package customer;
 /**
  *
  * @author laraashour
+ *  Represents customers in the database, used in CA_CUSTOMER_API to return customer info to the frontend
+ *  and in CA_CUSTOMER_API_Impl to store customer info retrieved from the database
  */
 
 

@@ -1,12 +1,11 @@
 package login;
 
 import java.sql.Connection;
-import database.DBConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
+import database.DBConnection;
 
 public class SA_LOGIN_API {
 
@@ -181,6 +180,8 @@ public String getUserRole(String username) {
     return null;
 }
 
+    // role check helper
+
     public boolean hasAnyRole(String username, String... roles) {
         String userRole = getUserRole(username);
         if (userRole == null || roles == null) {
@@ -196,9 +197,13 @@ public String getUserRole(String username) {
         return false;
     }
 
+    // role check helper for managers
+
     public boolean isManagerRole(String username) {
         return hasAnyRole(username, "Manager", "Director of Operations");
     }
+
+    // role check helper for admins and managers
 
     public boolean isAdminOrManagerRole(String username) {
         return hasAnyRole(username, "Admin", "Manager", "Director of Operations");

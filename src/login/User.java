@@ -9,6 +9,7 @@ package login;
 /**
  *
  * @author laraashour
+ * getters and setters for user data, used in SA_LOGIN_API to return user info after login
  */
 public class User {
     

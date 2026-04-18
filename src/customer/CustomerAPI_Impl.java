@@ -4,13 +4,14 @@
  */
 package customer;
 
-import database.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import database.DBConnection;
 import templates.TemplateAPI;
 import templates.TemplateAPI_Impl;
 
@@ -31,6 +32,7 @@ public class CustomerAPI_Impl implements CustomerAPI  {
         return String.format("ACC%03d", customerId);
     }
 
+    // Allows or the creation of new customer records in the database
 @Override
 public boolean addCustomer(String firstName,
                            String surname,
@@ -68,6 +70,7 @@ public boolean addCustomer(String firstName,
     }
 }
 
+// Retrieves all customer records from the database and returns them as a list of Customer objects.
     @Override
     public List<Customer> getAllCustomers() throws Exception {
         List<Customer> customers = new ArrayList<>();
@@ -105,6 +108,7 @@ public boolean addCustomer(String firstName,
         return customers;
     }
 
+    // Deletes a customer from the database
     @Override
     public boolean deleteCustomer(String accountId) throws Exception {
         int customerId = parseCustomerId(accountId);
@@ -123,6 +127,7 @@ public boolean addCustomer(String firstName,
         }
     }
 
+    // Checks if a customer exists in the database based on their account ID
     @Override
     public boolean customerExists(String accountId) throws Exception {
         int customerId = parseCustomerId(accountId);
@@ -144,7 +149,7 @@ public boolean addCustomer(String firstName,
         }
     }
         
-        
+        // Normalises account statuses in the database to ensure consistency with the current status definitions used in the application.
     public void normaliseStatuses() throws Exception {
     String sql1 = "UPDATE ca_customers SET account_status = 'NORMAL' WHERE account_status = 'ACTIVE'";
     String sql2 = "UPDATE ca_customers SET account_status = 'IN_DEFAULT' WHERE account_status = 'CLOSED'";
@@ -162,7 +167,8 @@ public boolean addCustomer(String firstName,
    
         }
     }
-    
+
+    // Utility method to format customer IDs in the standard "ACC###" format for display purposes.
     @Override
 public void updateAccountStatuses() throws Exception {
     String suspendSql =
@@ -198,7 +204,7 @@ public void updateAccountStatuses() throws Exception {
         psNormal.executeUpdate();
     }
 }
-    
+    // Used to set discount plans for customers
     @Override
 public boolean setDiscountPlan(String accountId, String planType, double discountValue) throws Exception {
     int customerId = parseCustomerId(accountId);
@@ -229,6 +235,7 @@ public boolean setDiscountPlan(String accountId, String planType, double discoun
     }
 }
 
+// Used to modify existing discount plans for customers
     @Override
 public boolean modifyDiscountPlan(String accountId, String planType, double discountValue) throws Exception {
     int customerId = parseCustomerId(accountId);
@@ -250,6 +257,7 @@ String sql = "UPDATE ca_customer_discounts SET plan_type = ?, discount_value = ?
     }
 }
 
+// Used to delete discount plans for customers
 @Override
 public boolean deleteDiscountPlan(String accountId) throws Exception {
     int customerId = parseCustomerId(accountId);
@@ -268,6 +276,7 @@ public boolean deleteDiscountPlan(String accountId) throws Exception {
     }
   }
 
+  // Used to retrieve a customer's discount plan details for display purposes
 @Override
 public String getDiscountPlan(String accountId) throws Exception {
     int customerId = parseCustomerId(accountId);
@@ -300,6 +309,7 @@ public void updateReminderStatuses() throws Exception {
     // that are not present in the current schema.
 }
 
+// Used to generate payment reminders for customers based on their account status and outstanding balance, and to track generated reminders in the database to prevent duplicates.
 @Override
 public int generateReminders() throws Exception {
     int count = 0;
@@ -359,6 +369,8 @@ public int generateReminders() throws Exception {
     return count;
 }
 
+// Used to generate payment reminders for a specific customer based on their account status and outstanding balance, 
+// and to track generated reminders in the database to prevent duplicates. Returns the generated reminder texts for display purposes.
 @Override
 public java.util.List<String> generateReminders(String accountId) throws Exception {
     int customerId = parseCustomerId(accountId);
@@ -437,6 +449,7 @@ public java.util.List<String> generateReminders(String accountId) throws Excepti
     return reminders;
 }
 
+// Utility method to build reminder text by replacing placeholders in the template with actual customer and pharmacy details.
 private String buildReminderText(String template,
                                  String customerName,
                                  String accountId,
@@ -477,6 +490,7 @@ private boolean reminderExists(Connection conn, int customerId, String reminderT
     }
 }
 
+// Utility method to insert a new reminder record into the database 
 private void insertReminder(Connection conn, int reminderId, int customerId, String reminderType) throws Exception {
     String insertSql = "INSERT INTO ca_payment_reminders (reminder_id, customer_id, reminder_type, generated_at, status) " +
                        "VALUES (?, ?, ?, datetime('now'), 'GENERATED')";
@@ -489,6 +503,8 @@ private void insertReminder(Connection conn, int reminderId, int customerId, Str
     }
 }
 
+// Reminder state is tracked only in ca_payment_reminders.
+// This method is retained for compatibility but does not rely on database fields
 private String safeTemplateFetch(TemplateAPI templateAPI, String key) {
     try {
         return templateAPI.getTemplate(key);
@@ -504,6 +520,7 @@ public void clearReminderStatusesIfPaid(String accountId) throws Exception {
     // is a no-op for the current database design.
 }
 
+// This method is retained for compatibility but does not rely on database fields
 @Override
 public double getOutstandingBalanceByUsername(String username) throws Exception {
     if (username == null || username.isBlank()) {
